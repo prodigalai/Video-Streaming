@@ -44,8 +44,8 @@ export function TopNavbar({ onMenuToggle, isMenuOpen }: TopNavbarProps) {
             {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
-              <span className="text-primary-foreground font-black text-lg">S</span>
+            <div className="h-9 w-9 rounded-lg overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
+              <img src="/logo.png" alt="StreamVault" className="h-full w-full object-cover" />
             </div>
             <span className="hidden sm:block text-lg font-black text-gradient tracking-tight">
               StreamVault
