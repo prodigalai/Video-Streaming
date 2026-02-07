@@ -269,7 +269,7 @@ export default function CreatorProfilePage() {
                   <span className="text-muted-foreground font-normal">followers</span>
                 </span>
                 <div className="flex items-center gap-4">
-                  {creator.socials.twitter && (
+                  {creator.socials?.twitter && (
                     <a
                       href={`https://twitter.com/${creator.socials.twitter}`}
                       target="_blank"
@@ -279,7 +279,7 @@ export default function CreatorProfilePage() {
                       <Twitter className="h-5 w-5" />
                     </a>
                   )}
-                  {creator.socials.instagram && (
+                  {creator.socials?.instagram && (
                     <a
                       href={`https://instagram.com/${creator.socials.instagram}`}
                       target="_blank"
@@ -354,6 +354,49 @@ export default function CreatorProfilePage() {
             </div>
 
             <TabsContent value="home" className="mt-6 space-y-8">
+              {/* Following */}
+              <div className="space-y-4">
+                <h2 className="text-lg font-bold flex items-center gap-2">Following</h2>
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-1">
+                  {followingChannels.map((ch) => (
+                    <Link
+                      key={ch.id}
+                      to={`/creator/${ch.id === "luna" ? "luna" : ch.id}`}
+                      className="flex-shrink-0 w-36 sm:w-40 rounded-xl border border-white/10 bg-card/50 p-3 hover:bg-white/5 transition-colors"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <img src={ch.avatar} alt="" className="h-10 w-10 rounded-full ring-2 ring-border" />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-semibold text-sm truncate">{ch.name}</p>
+                          <p className="text-xs text-muted-foreground">{ch.category}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground font-medium">
+                        {ch.viewers >= 1000 ? `${(ch.viewers / 1000).toFixed(1)}K` : ch.viewers} watching
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Recommended */}
+              <div className="space-y-4">
+                <h2 className="text-lg font-bold flex items-center gap-2">Recommended</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {recommendedStreams.map((stream) => (
+                    <StreamCard
+                      key={stream.id}
+                      id={stream.id}
+                      title={stream.title}
+                      thumbnail={stream.thumbnail}
+                      creator={stream.creator}
+                      viewers={stream.viewers}
+                      category={stream.category}
+                    />
+                  ))}
+                </div>
+              </div>
+
               {/* Featured Live */}
               {creator.isLive && creator.currentStream && (
                 <div className="max-w-3xl">
@@ -383,7 +426,9 @@ export default function CreatorProfilePage() {
                           {creator.currentStream.title}
                         </h3>
                         <p className="text-white/80">
-                          {(creator.currentStream.viewers / 1000).toFixed(1)}K watching
+                          {creator.currentStream.viewers >= 1000
+                            ? `${(creator.currentStream.viewers / 1000).toFixed(1)}K`
+                            : creator.currentStream.viewers} watching
                         </p>
                       </div>
                     </div>
@@ -436,7 +481,7 @@ export default function CreatorProfilePage() {
                 <div className="rounded-xl bg-card border border-border p-6">
                   <h3 className="font-semibold mb-3">Social Links</h3>
                   <div className="flex flex-wrap gap-3">
-                    {creator.socials.twitter && (
+                    {creator.socials?.twitter && (
                       <a
                         href={`https://twitter.com/${creator.socials.twitter}`}
                         target="_blank"
@@ -448,7 +493,7 @@ export default function CreatorProfilePage() {
                         <ExternalLink className="h-4 w-4 text-muted-foreground" />
                       </a>
                     )}
-                    {creator.socials.instagram && (
+                    {creator.socials?.instagram && (
                       <a
                         href={`https://instagram.com/${creator.socials.instagram}`}
                         target="_blank"
