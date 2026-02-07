@@ -11,7 +11,8 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  UserCircle
+  UserCircle,
+  ShieldCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const studioNavItems = [
   { icon: MessageSquare, label: "Comments", path: "/studio/comments" },
   { icon: Users, label: "Subscribers", path: "/studio/subscribers" },
   { icon: Wallet, label: "Wallet (Credits)", path: "/studio/wallet" },
+  { icon: ShieldCheck, label: "Verification (KYC)", path: "/studio/kyc" },
 ];
 
 const bottomNavItems = [

@@ -65,7 +65,7 @@ export function DesktopSidebar({ isOpen }: DesktopSidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col fixed left-0 top-14 bottom-0 z-40 border-r border-primary/20 bg-background/95 backdrop-blur-xl transition-all duration-300",
+        "hidden lg:flex flex-col border-r border-primary/20 bg-background/95 backdrop-blur-xl transition-all duration-300 relative z-20",
         isOpen ? "w-60" : "w-16"
       )}
     >

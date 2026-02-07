@@ -74,12 +74,12 @@ export default function TrendingPage() {
   return (
     <MainLayout>
       <div className="min-h-screen bg-[#05020d] text-white">
-        <div className="container py-8 space-y-12">
+        <div className="container py-4 lg:py-8 space-y-6 lg:space-y-12">
           
           {/* NEW: Cinematic Hero Slider */}
           <TrendingSlider />
 
-          <div className="grid lg:grid-cols-4 gap-12">
+          <div className="grid lg:grid-cols-4 gap-6 lg:gap-12">
              
              {/* Main Feed */}
              <div className="lg:col-span-3 space-y-12">

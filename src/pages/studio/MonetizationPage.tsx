@@ -1,4 +1,5 @@
-import { DollarSign, Wallet, ArrowRight, History, Download, CreditCard, ChevronRight, PieChart as PieIcon, TrendingUp, HandCoins } from "lucide-react";
+import { DollarSign, Wallet, ArrowRight, History, Download, CreditCard, ChevronRight, PieChart as PieIcon, TrendingUp, HandCoins, ShieldCheck } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -118,6 +119,26 @@ export default function MonetizationPage() {
                  </Button>
               </div>
            </div>
+
+            {/* KYC Verification Status */}
+            <div className="glass-card p-6 rounded-xl border-border/50 relative overflow-hidden group">
+               <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <ShieldCheck className="h-20 w-20 text-primary" />
+               </div>
+               <h3 className="font-bold mb-3 flex items-center gap-2 relative z-10">
+                  <ShieldCheck className="h-5 w-5 text-primary" /> Verification Status
+               </h3>
+               <div className="flex items-center gap-2 mb-4 relative z-10">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
+                  <span className="text-sm font-bold text-yellow-500 uppercase tracking-tighter">Verification Required</span>
+               </div>
+               <p className="text-xs text-muted-foreground mb-6 relative z-10">
+                  Verify your account to unlock lifetime payouts and higher earning potential.
+               </p>
+               <Button asChild className="w-full h-11 rounded-lg bg-primary hover:shadow-glow font-bold relative z-10">
+                  <Link to="/studio/kyc">Get Verified Now</Link>
+               </Button>
+            </div>
 
            {/* Revenue Streams */}
            <div className="glass-card p-6 rounded-xl space-y-6">

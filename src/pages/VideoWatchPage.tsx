@@ -103,8 +103,8 @@ export default function VideoWatchPage() {
   return (
     <MainLayout>
       <div className="min-h-screen bg-[#05020d] text-white">
-        <div className="container py-8">
-          <div className="grid lg:grid-cols-3 gap-8">
+        <div className="container py-4 lg:py-8">
+          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-8">
               {/* Cinematic Video Player Container */}

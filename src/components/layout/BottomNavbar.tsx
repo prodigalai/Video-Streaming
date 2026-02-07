@@ -6,15 +6,14 @@ const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Radio, label: "Live", path: "/live" },
   { icon: Wallet, label: "Wallet", path: "/wallet" },
-  { icon: User, label: "Profile", path: "/profile" },
 ];
 
 export function BottomNavbar() {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden border-t border-border/50 bg-background/80 backdrop-blur-xl">
-      <div className="flex items-center justify-around h-16 pb-safe">
+    <nav className="w-full shrink-0 z-50 relative lg:hidden border-t border-white/15 bg-black/90 backdrop-blur-xl pb-safe shadow-[0_-1px_10px_rgba(0,0,0,1)]">
+      <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (

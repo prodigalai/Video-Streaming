@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { StreamCard } from "@/components/cards/StreamCard";
 import { VideoCard } from "@/components/cards/VideoCard";
 import { CategoryCard } from "@/components/cards/CategoryCard";
+import { MadeForYou } from "@/components/feed/MadeForYou";
 import { ForYouFeed } from "@/components/feed/ForYouFeed";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { HeroSlider } from "@/components/hero/HeroSlider";
@@ -195,17 +196,20 @@ const Index = () => {
 
   return (
     <MainLayout>
-      <div className="relative">
-        {/* Ambient background orbs & Particles */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="cosmos-particles" />
-          <div className="ambient-orb orb-primary w-[600px] h-[600px] -top-[200px] -left-[200px]" />
-          <div className="ambient-orb orb-secondary w-[400px] h-[400px] top-[50%] -right-[100px]" />
-        </div>
+        <div className="relative">
+          {/* Ambient background orbs & Particles */}
+          <div className="fixed inset-0 overflow-hidden pointer-events-none">
+            <div className="cosmos-particles" />
+            <div className="ambient-orb orb-primary w-[600px] h-[600px] -top-[200px] -left-[200px]" />
+            <div className="ambient-orb orb-secondary w-[400px] h-[400px] top-[50%] -right-[100px]" />
+          </div>
 
-        <div className="container py-8 space-y-16 relative z-10">
           {/* Hero Slider - Cinematic Entry */}
-          <HeroSlider streams={featuredStreams} />
+          <div className="relative z-10 mb-8 lg:mb-0">
+             <HeroSlider streams={featuredStreams} />
+          </div>
+
+          <div className="container py-4 lg:py-8 space-y-8 lg:space-y-16 relative z-10">
 
           {/* Categories Section - High Density Browse */}
           <section className="animate-fade-in" style={{ animationDelay: '100ms' }}>
@@ -231,8 +235,13 @@ const Index = () => {
             <TopChannels channels={topChannels} />
           </section>
 
-          {/* Recommended Feed - Personalized Discovery */}
+          {/* Made For You - Reels & Social Sidebar */}
           <section className="animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <MadeForYou />
+          </section>
+
+          {/* Recommended Feed - Personalized Discovery */}
+          <section className="animate-fade-in" style={{ animationDelay: '350ms' }}>
             <ForYouFeed />
           </section>
 

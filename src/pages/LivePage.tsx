@@ -97,7 +97,7 @@ export default function LivePage() {
   return (
     <MainLayout>
       <div className="min-h-screen bg-[#05020d] text-white">
-        <div className="container py-8 space-y-8">
+        <div className="container py-4 lg:py-8 space-y-6 lg:space-y-8">
           {/* Pro Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-white/5">
             <div className="space-y-2">

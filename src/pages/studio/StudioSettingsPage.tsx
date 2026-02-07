@@ -32,6 +32,7 @@ export default function StudioSettingsPage() {
                { id: 'branding', label: 'Branding', icon: Camera },
                { id: 'notifications', label: 'Notifications', icon: Bell },
                { id: 'privacy', label: 'Privacy & Security', icon: Shield },
+               { id: 'verification', label: 'Verification (KYC)', icon: ShieldCheck },
                { id: 'payouts', label: 'Payments & Tax', icon: CreditCard },
                { id: 'stream', label: 'Stream Preferences', icon: Radio },
             ].map((tab) => (
@@ -169,10 +170,64 @@ export default function StudioSettingsPage() {
                    </div>
                 </div>
              )}
-         </div>
-      </div>
+
+             {activeTab === 'verification' && (
+                <div className="space-y-8 animate-fade-in">
+                   <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-bold flex items-center gap-2">
+                         <ShieldCheck className="h-5 w-5 text-primary" /> KYC & Age Verification
+                      </h3>
+                      <Badge variant="outline" className="text-yellow-500 border-yellow-500/50 bg-yellow-500/10 font-bold px-3 py-1">Action Required</Badge>
+                   </div>
+                   
+                   <div className="grid gap-6">
+                      <div className="p-6 rounded-2xl border border-border/50 bg-muted/5 space-y-4">
+                         <div className="flex items-start gap-4">
+                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                               <User className="h-5 w-5 text-primary" />
+                            </div>
+                            <div className="space-y-1">
+                               <p className="font-bold">Age Verification</p>
+                               <p className="text-sm text-muted-foreground">Confirm your date of birth to comply with regional regulations.</p>
+                               <div className="pt-4 flex items-end gap-4">
+                                  <div className="flex-1 space-y-2">
+                                     <Label className="text-[10px] uppercase font-bold text-muted-foreground">Date of Birth</Label>
+                                     <Input type="date" className="bg-muted/20 border-border/50 h-10" />
+                                  </div>
+                                  <Button size="sm" className="h-10 px-4" onClick={() => toast.success("DOB saved")}>Save Age</Button>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+
+                      <div className="p-6 rounded-2xl border border-primary/20 bg-primary/5 space-y-6">
+                         <div className="flex items-center gap-4">
+                            <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
+                               <ShieldCheck className="h-5 w-5 text-primary" />
+                            </div>
+                            <div>
+                               <p className="font-bold">Identity Verification (KYC)</p>
+                               <p className="text-sm text-muted-foreground">Required for all creators earning over $50/month.</p>
+                            </div>
+                         </div>
+                         <div className="space-y-3">
+                            <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
+                               <span>Identity Progress</span>
+                               <span className="text-primary">Not Started</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
+                               <div className="h-full bg-primary/30 w-0" />
+                            </div>
+                         </div>
+                         <Button asChild className="w-full h-11 glow-primary font-bold">
+                            <Link to="/studio/kyc">Begin KYC Verification Process</Link>
+                         </Button>
+                      </div>
+                   </div>
+                </div>
+             )}
+          </div>
+       </div>
     </div>
   );
 }
-
-

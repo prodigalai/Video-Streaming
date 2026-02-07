@@ -51,8 +51,9 @@ const creatorVideos = [
     creator: { name: "Luna Live", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna" },
     duration: "18:22",
     views: 32000,
-    price: 100,
+    price: 0,
     isLocked: false,
+    type: 'free'
   },
   {
     id: "v2",
@@ -63,6 +64,7 @@ const creatorVideos = [
     views: 18000,
     price: 150,
     isLocked: true,
+    type: 'ppv'
   },
   {
     id: "v3",
@@ -71,6 +73,20 @@ const creatorVideos = [
     creator: { name: "Luna Live", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna" },
     duration: "32:15",
     views: 28000,
+    price: 0,
+    isLocked: true,
+    type: 'sub'
+  },
+  {
+    id: "v4",
+    title: "Morning Yoga Routine",
+    thumbnail: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=338&fit=crop",
+    creator: { name: "Luna Live", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna" },
+    duration: "15:00",
+    views: 12000,
+    price: 0,
+    isLocked: false,
+    type: 'free'
   },
 ];
 
@@ -78,9 +94,20 @@ export default function CreatorProfilePage() {
   const { id } = useParams();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [notificationsOn, setNotificationsOn] = useState(false);
-  const [activeTab, setActiveTab] = useState("live");
+  const [activeTab, setActiveTab] = useState("home");
 
   const creator = creatorData;
+
+  const getFilteredContent = (tab: string) => {
+    switch (tab) {
+      case 'free':
+        return creatorVideos.filter(v => v.type === 'free');
+      case 'premium':
+        return creatorVideos.filter(v => v.type === 'sub' || v.type === 'ppv');
+      default:
+        return creatorVideos;
+    }
+  };
 
   return (
     <MainLayout>
@@ -188,17 +215,16 @@ export default function CreatorProfilePage() {
         {/* Content Tabs */}
         <div className="container mt-8 pb-8">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="w-full max-w-md grid grid-cols-3 bg-muted/50">
-              <TabsTrigger value="live">
-                {creator.isLive && <span className="h-2 w-2 rounded-full bg-live mr-2 animate-pulse" />}
-                Live
-              </TabsTrigger>
-              <TabsTrigger value="videos">Videos</TabsTrigger>
+            <TabsList className="w-full max-w-xl grid grid-cols-4 bg-muted/50">
+              <TabsTrigger value="home">Home</TabsTrigger>
+              <TabsTrigger value="free">Free</TabsTrigger>
+              <TabsTrigger value="premium">Premium</TabsTrigger>
               <TabsTrigger value="about">About</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="live" className="mt-6">
-              {creator.isLive && creator.currentStream ? (
+            <TabsContent value="home" className="mt-6 space-y-8">
+              {/* Featured Live */}
+              {creator.isLive && creator.currentStream && (
                 <div className="max-w-3xl">
                   <Link
                     to={`/watch/live/${creator.currentStream.id}`}
@@ -232,21 +258,42 @@ export default function CreatorProfilePage() {
                     </div>
                   </Link>
                 </div>
-              ) : (
-                <NoContent />
               )}
+
+              {/* Recent Videos */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {creatorVideos.map((video) => (
+                  <VideoCard key={video.id} {...video} />
+                ))}
+              </div>
             </TabsContent>
 
-            <TabsContent value="videos" className="mt-6">
-              {creatorVideos.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {creatorVideos.map((video) => (
+            <TabsContent value="free" className="mt-6">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {getFilteredContent('free').length > 0 ? (
+                  getFilteredContent('free').map((video) => (
                     <VideoCard key={video.id} {...video} />
-                  ))}
-                </div>
-              ) : (
-                <NoContent />
-              )}
+                  ))
+                ) : (
+                  <div className="col-span-full">
+                     <NoContent />
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="premium" className="mt-6">
+               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {getFilteredContent('premium').length > 0 ? (
+                  getFilteredContent('premium').map((video) => (
+                    <VideoCard key={video.id} {...video} />
+                  ))
+                ) : (
+                  <div className="col-span-full">
+                     <NoContent />
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
             <TabsContent value="about" className="mt-6">

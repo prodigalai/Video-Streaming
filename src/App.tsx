@@ -18,6 +18,16 @@ import LibraryPage from "./pages/LibraryPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import MessagesPage from "./pages/MessagesPage";
+import LegalPage from "./pages/LegalPage";
+import AboutPage from "./pages/AboutPage";
+import PricingPage from "./pages/PricingPage";
+import ContactPage from "./pages/ContactPage";
+import RewardsPage from "./pages/RewardsPage";
+import CreatorsPage from "./pages/CreatorsPage";
 
 // Studio Imports
 import { StudioLayout } from "./components/layout/studio/StudioLayout";
@@ -30,7 +40,7 @@ import CommentsPage from "./pages/studio/CommentsPage";
 import SubscribersPage from "./pages/studio/SubscribersPage";
 import StudioWalletPage from "./pages/studio/StudioWalletPage";
 import StudioSettingsPage from "./pages/studio/StudioSettingsPage";
-import NotificationsPage from "@/pages/NotificationsPage";
+import KYCPage from "./pages/studio/KYCPage";
 
 const queryClient = new QueryClient();
 
@@ -52,11 +62,24 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
+            {/* Auth Routes */}
+            <Route path="/auth/login" element={<LoginPage />} />
+            <Route path="/auth/register" element={<RegisterPage />} />
+
             {/* Viewer Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/live" element={<LivePage />} />
             <Route path="/trending" element={<TrendingPage />} />
             <Route path="/search" element={<SearchPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/messages" element={<MessagesPage />} />
+            <Route path="/legal" element={<LegalPage />} />
+            <Route path="/legal/:docId" element={<LegalPage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/rewards" element={<RewardsPage />} />
+            <Route path="/creators" element={<CreatorsPage />} />
             <Route path="/creator/:id" element={<CreatorProfilePage />} />
             <Route path="/watch/live/:id" element={<LiveWatchPage />} />
             <Route path="/watch/video/:id" element={<VideoWatchPage />} />
@@ -83,6 +106,7 @@ const App = () => (
                       <Route path="comments" element={<CommentsPage />} />
                       <Route path="subscribers" element={<SubscribersPage />} />
                       <Route path="wallet" element={<StudioWalletPage />} />
+                      <Route path="kyc" element={<KYCPage />} />
                       <Route path="settings" element={<StudioSettingsPage />} />
                     </Routes>
                   </StudioLayout>

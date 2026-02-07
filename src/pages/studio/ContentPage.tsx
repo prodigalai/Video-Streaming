@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ContentUploadModal } from "@/components/content/ContentUploadModal";
 
 const contentItems = [
   { 
@@ -62,12 +63,15 @@ import { cn } from "@/lib/utils";
 
 export default function ContentPage() {
   const [activeType, setActiveType] = useState('All');
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <h1 className="text-3xl font-bold tracking-tight text-gradient">Channel Content</h1>
-        <Button className="rounded-lg bg-primary hover:shadow-glow transition-all px-6 h-11 font-bold" onClick={() => toast.success("Upload dialog opened")}>Upload Video</Button>
+        <ContentUploadModal open={isUploadOpen} onOpenChange={setIsUploadOpen}>
+            <Button className="rounded-lg bg-primary hover:shadow-glow transition-all px-6 h-11 font-bold">Upload Video</Button>
+        </ContentUploadModal>
       </div>
 
       {/* Filters & Search */}
