@@ -23,6 +23,7 @@ import { VideoCard } from "@/components/cards/VideoCard";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { VideoComments } from "@/components/video/VideoComments";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // Mock data
 const videoData = {
@@ -98,6 +99,23 @@ export default function VideoWatchPage() {
   const handleUnlock = () => {
     // Would trigger purchase flow
     console.log("Unlocking video for", video.price, "credits");
+  };
+
+  const handleShare = () => {
+    const shareData = {
+      title: video.title,
+      text: `Check out this video on StreamVault: ${video.title}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      navigator.share(shareData).catch((err) => {
+        console.error("Error sharing:", err);
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Video link copied to clipboard!");
+    }
   };
 
   return (
@@ -188,17 +206,17 @@ export default function VideoWatchPage() {
 
               {/* Video Metrics & Actions */}
               <div className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                   <h1 className="text-2xl md:text-3xl font-black text-white/90 leading-tight tracking-tight">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/5">
+                   <h1 className="text-2xl md:text-3xl font-black text-white/90 leading-tight tracking-tight max-w-2xl">
                      {video.title}
                    </h1>
-                   <div className="flex items-center gap-3">
-                      <div className="flex items-center bg-white/5 rounded-2xl border border-white/5 overflow-hidden">
+                   <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex items-center bg-white/5 rounded-2xl border border-white/5 overflow-hidden w-full sm:w-auto">
                         <Button
                           variant="ghost"
                           onClick={() => setIsLiked(!isLiked)}
                           className={cn(
-                            "h-12 px-6 rounded-none font-black text-xs uppercase tracking-widest border-r border-white/5 transition-all text-white group",
+                            "flex-1 sm:flex-none h-11 px-6 rounded-none font-black text-[10px] uppercase tracking-widest border-r border-white/5 transition-all text-white group",
                             isLiked && "text-primary bg-primary/10"
                           )}
                         >
@@ -207,12 +225,16 @@ export default function VideoWatchPage() {
                         </Button>
                         <Button
                           variant="ghost"
-                          className="h-12 px-4 rounded-none hover:bg-white/10 text-white group"
+                          className="h-11 px-4 rounded-none hover:bg-white/10 text-white group"
                         >
                           <ThumbsDown className="h-4 w-4 transition-transform group-hover:scale-110 group-hover:text-red-500" />
                         </Button>
                       </div>
-                      <Button variant="ghost" className="h-12 px-6 rounded-2xl font-black text-xs uppercase tracking-widest border border-white/5 hover:bg-white/5 text-white">
+                      <Button 
+                        variant="ghost" 
+                        onClick={handleShare}
+                        className="flex-1 sm:flex-none h-11 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest border border-white/5 hover:bg-white/5 text-white"
+                      >
                         <Share2 className="h-4 w-4 mr-2" />
                         Share
                       </Button>
@@ -235,39 +257,39 @@ export default function VideoWatchPage() {
                 </div>
 
                 {/* Creator Profile Section */}
-                <div className="flex items-center justify-between p-6 rounded-3xl glass-card border-white/5 bg-white/[0.02]">
-                  <Link to={`/creator/${video.creator.id}`} className="flex items-center gap-4 group">
-                    <div className="relative p-1 rounded-2xl bg-gradient-primary">
-                       <Avatar className="h-14 w-14 rounded-xl border-2 border-background">
-                         <AvatarImage src={video.creator.avatar} />
-                         <AvatarFallback>{video.creator.name[0]}</AvatarFallback>
-                       </Avatar>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg font-black text-gradient group-hover:opacity-80 transition-opacity tracking-tight">
-                          {video.creator.name}
-                        </span>
-                        {video.creator.isVerified && (
-                          <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <div className="flex flex-col md:flex-row md:items-center justify-between p-6 rounded-3xl glass-card border-white/5 bg-white/[0.02] gap-4">
+                      <Link to={`/creator/${video.creator.id}`} className="flex items-center gap-4 group">
+                        <div className="relative p-1 rounded-2xl bg-gradient-primary">
+                           <Avatar className="h-14 w-14 rounded-xl border-2 border-background">
+                             <AvatarImage src={video.creator.avatar} />
+                             <AvatarFallback>{video.creator.name[0]}</AvatarFallback>
+                           </Avatar>
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-black text-gradient group-hover:opacity-80 transition-opacity tracking-tight">
+                              {video.creator.name}
+                            </span>
+                            {video.creator.isVerified && (
+                              <CheckCircle2 className="h-4 w-4 text-primary" />
+                            )}
+                          </div>
+                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                            {(video.creator.followers / 1000).toFixed(1)}K Supporters
+                          </p>
+                        </div>
+                      </Link>
+                      <Button
+                        variant={isSubscribed ? "secondary" : "default"}
+                        onClick={() => setIsSubscribed(!isSubscribed)}
+                        className={cn(
+                           "w-full md:w-auto h-12 px-8 rounded-xl font-black text-xs uppercase tracking-widest transition-all",
+                           isSubscribed ? "bg-white/10 text-white" : "bg-primary text-black hover:shadow-glow-primary"
                         )}
-                      </div>
-                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                        {(video.creator.followers / 1000).toFixed(1)}K Supporters
-                      </p>
+                      >
+                        {isSubscribed ? "Subscribed" : "Subscribe"}
+                      </Button>
                     </div>
-                  </Link>
-                  <Button
-                    variant={isSubscribed ? "secondary" : "default"}
-                    onClick={() => setIsSubscribed(!isSubscribed)}
-                    className={cn(
-                       "h-12 px-8 rounded-xl font-black text-xs uppercase tracking-widest transition-all",
-                       isSubscribed ? "bg-white/10 text-white" : "bg-primary text-black hover:shadow-glow-primary"
-                    )}
-                  >
-                    {isSubscribed ? "Subscribed" : "Subscribe"}
-                  </Button>
-                </div>
 
                 {/* Video Meta Info */}
                 <div className="p-6 rounded-3xl bg-white/[0.01] border border-white/5">

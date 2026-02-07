@@ -9,17 +9,23 @@ import {
   Settings,
   Library,
   TrendingUp,
+  Compass,
+  Users,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const mainNavItems = [
   { icon: Home, label: "Home", path: "/" },
-  { icon: Radio, label: "Live", path: "/live" },
+  { icon: Compass, label: "Explore", path: "/explore" },
+  { icon: Users, label: "Following", path: "/following" },
   { icon: TrendingUp, label: "Trending", path: "/trending" },
+  { icon: Radio, label: "Live", path: "/live" },
 ];
 
 const libraryItems = [
   { icon: Library, label: "Library", path: "/library" },
+  { icon: Clock, label: "History", path: "/history" },
   { icon: Heart, label: "Subscriptions", path: "/subscriptions" },
   { icon: Wallet, label: "Wallet", path: "/wallet" },
 ];
@@ -65,8 +71,10 @@ export function DesktopSidebar({ isOpen }: DesktopSidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden lg:flex flex-col border-r border-primary/20 bg-background/95 backdrop-blur-xl transition-all duration-300 relative z-20",
-        isOpen ? "w-60" : "w-16"
+        "fixed lg:relative flex flex-col border-r border-primary/20 bg-background/95 backdrop-blur-xl transition-all duration-300 ease-in-out z-50 lg:z-20 h-full",
+        isOpen 
+          ? "w-64 translate-x-0" 
+          : "w-16 -translate-x-full lg:translate-x-0"
       )}
     >
       <div className={cn(

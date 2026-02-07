@@ -88,8 +88,8 @@ export function StreamInfo({
            </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3 self-end xl:self-center">
-           <div className="flex flex-col items-center px-4">
+        <div className="flex flex-wrap items-center gap-3 self-stretch sm:self-end xl:self-center">
+           <div className="flex flex-col items-center px-4 sm:border-r border-white/10">
               <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Viewers</span>
               <div className="flex items-center gap-2">
                  <div className="h-2 w-2 rounded-full bg-live animate-pulse" />
@@ -97,43 +97,41 @@ export function StreamInfo({
               </div>
            </div>
 
-           <div className="h-10 w-px bg-white/10 mx-2 hidden sm:block" />
-
-           <div className="flex gap-2">
+           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
               <Button
                  variant={isFollowing ? "secondary" : "default"}
                  onClick={onFollowToggle}
                  className={cn(
-                    "h-12 px-6 rounded-xl font-black text-xs uppercase tracking-widest border-none transition-all duration-300",
+                    "flex-1 sm:flex-none h-11 px-4 sm:px-6 rounded-xl font-black text-[10px] uppercase tracking-widest border-none transition-all duration-300",
                     isFollowing 
                     ? "bg-white/10 text-white hover:bg-white/20" 
                     : "bg-white text-black hover:bg-primary hover:text-black hover:shadow-glow-primary"
                  )}
               >
-                 <Heart className={cn("h-4 w-4 mr-2", isFollowing && "fill-current text-pink-500")} />
+                 <Heart className={cn("h-3.5 w-3.5 mr-2", isFollowing && "fill-current text-pink-500")} />
                  {isFollowing ? "Following" : "Follow"}
               </Button>
 
               <div className="flex items-center bg-white/5 rounded-xl border border-white/5 overflow-hidden">
-                 <Button variant="ghost" className="h-12 px-4 rounded-none hover:bg-white/10 text-white border-r border-white/5 group">
-                    <ThumbsUp className="h-4 w-4 mr-2 group-hover:text-primary group-hover:scale-110 transition-all" />
+                 <Button variant="ghost" className="h-11 px-3 sm:px-4 rounded-none hover:bg-white/10 text-white border-r border-white/5 group">
+                    <ThumbsUp className="h-3.5 w-3.5 mr-2 group-hover:text-primary group-hover:scale-110 transition-all" />
                     <span className="text-[10px] font-black uppercase">1.2K</span>
                  </Button>
-                 <Button variant="ghost" className="h-12 px-4 rounded-none hover:bg-white/10 text-white group">
-                    <ThumbsDown className="h-4 w-4 group-hover:text-red-500 group-hover:scale-110 transition-all" />
+                 <Button variant="ghost" className="h-11 px-3 sm:px-4 rounded-none hover:bg-white/10 text-white group">
+                    <ThumbsDown className="h-3.5 w-3.5 group-hover:text-red-500 group-hover:scale-110 transition-all" />
                  </Button>
               </div>
 
               <Button
                  onClick={onSubscribeToggle}
-                 className="h-12 px-6 rounded-xl bg-primary text-black font-black text-xs uppercase tracking-widest hover:shadow-glow-primary transition-all duration-300"
+                 className="flex-1 sm:flex-none h-11 px-4 sm:px-6 rounded-xl bg-primary text-black font-black text-[10px] uppercase tracking-widest hover:shadow-glow-primary transition-all duration-300"
               >
-                 <Sparkles className="h-4 w-4 mr-2" />
+                 <Sparkles className="h-3.5 w-3.5 mr-2" />
                  Subscribe
               </Button>
 
-              <Button variant="ghost" size="icon" className="h-12 w-12 rounded-xl border border-white/5 hover:bg-white/5 text-muted-foreground">
-                 <Share2 className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl border border-white/5 hover:bg-white/5 text-muted-foreground">
+                 <Share2 className="h-4 w-4" />
               </Button>
            </div>
         </div>

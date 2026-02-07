@@ -131,17 +131,18 @@ export function HeroSlider({ streams, autoPlayInterval = 5000 }: HeroSliderProps
                   const tweenValue = tweenValues[index] || 0;
                   const absDiff = Math.abs(tweenValue);
                   
-                  // Cinematic 3D Depth Formula
-                  const scale = 1 - absDiff * 0.25;
-                  const opacity = 1 - absDiff * 0.6;
-                  const rotateY = tweenValue * -45; 
-                  const translateZ = (1 - absDiff) * 150; 
-                  const blur = absDiff * 5; 
+                  // Cinematic 3D Depth Formula - More conservative on mobile
+                  const isMobile = typeof window !== 'undefined' && window.innerWidth < 1024;
+                  const scale = 1 - absDiff * (isMobile ? 0.15 : 0.25);
+                  const opacity = 1 - absDiff * (isMobile ? 0.4 : 0.6);
+                  const rotateY = tweenValue * (isMobile ? -25 : -45); 
+                  const translateZ = (1 - absDiff) * (isMobile ? 50 : 150); 
+                  const blur = absDiff * (isMobile ? 2 : 5); 
 
                   return (
                     <div
                       key={stream.id}
-                      className="relative flex-[0_0_85%] lg:flex-[0_0_80%] min-w-0 px-2 lg:px-4"
+                      className="relative flex-[0_0_92%] lg:flex-[0_0_80%] min-w-0 px-2 lg:px-4"
                       style={{ 
                         perspective: '1500px',
                         transformStyle: 'preserve-3d',

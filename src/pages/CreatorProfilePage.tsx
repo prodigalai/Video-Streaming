@@ -18,30 +18,122 @@ import { StreamCard } from "@/components/cards/StreamCard";
 import { VideoCard } from "@/components/cards/VideoCard";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { NoContent } from "@/components/shared/EmptyState";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
-// Mock creator data
-const creatorData = {
-  id: "luna",
-  name: "Luna Live",
-  username: "luna_live",
-  avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna",
-  banner: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&h=400&fit=crop",
-  bio: "Welcome to my channel! 🌙 I stream late night vibes, chill music, and real conversations. Join our amazing community!",
-  followers: 125000,
-  isLive: true,
-  isVerified: true,
-  socials: {
-    twitter: "luna_live",
-    instagram: "lunalive",
+// Mock creator data by slug (so /creator/malek_04 and /creator/luna both work)
+type CreatorData = {
+  id: string;
+  name: string;
+  username: string;
+  avatar: string;
+  banner: string;
+  bio: string;
+  followers: number;
+  isLive: boolean;
+  isVerified: boolean;
+  socials: { twitter?: string; instagram?: string };
+  currentStream?: {
+    id: string;
+    title: string;
+    thumbnail: string;
+    viewers: number;
+    category: string;
+  };
+};
+
+const creatorsBySlug: Record<string, CreatorData> = {
+  luna: {
+    id: "luna",
+    name: "Luna Live",
+    username: "luna_live",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna",
+    banner: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&h=400&fit=crop",
+    bio: "Welcome to my channel! 🌙 I stream late night vibes, chill music, and real conversations. Join our amazing community!",
+    followers: 125000,
+    isLive: true,
+    isVerified: true,
+    socials: { twitter: "luna_live", instagram: "lunalive" },
+    currentStream: {
+      id: "featured-1",
+      title: "Late Night Vibes 🌙 Chill Music & Chat",
+      thumbnail: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=338&fit=crop",
+      viewers: 12500,
+      category: "Just Chatting",
+    },
   },
-  currentStream: {
-    id: "featured-1",
-    title: "Late Night Vibes 🌙 Chill Music & Chat",
-    thumbnail: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=338&fit=crop",
-    viewers: 12500,
-    category: "Just Chatting",
+  luna_live: {
+    id: "luna",
+    name: "Luna Live",
+    username: "luna_live",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna",
+    banner: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&h=400&fit=crop",
+    bio: "Welcome to my channel! 🌙 I stream late night vibes, chill music, and real conversations. Join our amazing community!",
+    followers: 125000,
+    isLive: true,
+    isVerified: true,
+    socials: { twitter: "luna_live", instagram: "lunalive" },
+    currentStream: {
+      id: "featured-1",
+      title: "Late Night Vibes 🌙 Chill Music & Chat",
+      thumbnail: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=338&fit=crop",
+      viewers: 12500,
+      category: "Just Chatting",
+    },
+  },
+  malek_04: {
+    id: "malek_04",
+    name: "Malek_04",
+    username: "malek_04",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=malek",
+    banner: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&h=400&fit=crop",
+    bio: "Chatting, gaming, and good vibes. Thanks for stopping by!",
+    followers: 1240,
+    isLive: true,
+    isVerified: false,
+    socials: {},
+    currentStream: {
+      id: "malek-live-1",
+      title: "Chatting & Chill",
+      thumbnail: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=600&h=338&fit=crop",
+      viewers: 160,
+      category: "Chatting",
+    },
   },
 };
+
+// Following / Recommended channel row item
+const followingChannels = [
+  { id: "luna", name: "Luna_Live", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=luna", category: "Music", viewers: 2400, isLive: true },
+  { id: "gamer", name: "GamerPro", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=gamer", category: "Gaming", viewers: 15200, isLive: true },
+  { id: "chill", name: "ChillVibes", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=chill", category: "Recommended", viewers: 890, isLive: true },
+];
+
+const recommendedStreams = [
+  { id: "razo97-1", title: "CS 2", creator: { name: "razo97", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=razo" }, viewers: 335, category: "CS 2", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=338&fit=crop" },
+  { id: "malek-04-1", title: "Chatting", creator: { name: "Malek_04", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=malek" }, viewers: 160, category: "Chatting", thumbnail: "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?w=600&h=338&fit=crop" },
+  { id: "funny-1", title: "Slots", creator: { name: "funnyhoodvidz", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=funny" }, viewers: 465, category: "Slots", thumbnail: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=338&fit=crop" },
+];
+
+function getCreatorBySlug(slug: string | undefined): CreatorData | null {
+  if (!slug) return null;
+  const normalized = slug.toLowerCase().replace(/-/g, "_");
+  if (creatorsBySlug[normalized]) return creatorsBySlug[normalized];
+  // Fallback: show a profile for any slug so /creator/anything never 404s
+  const name = slug.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return {
+    id: slug,
+    name: name,
+    username: slug,
+    avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(slug)}`,
+    banner: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&h=400&fit=crop",
+    bio: "Creator on StreamVault.",
+    followers: 0,
+    isLive: false,
+    isVerified: false,
+    socials: {},
+  };
+}
 
 const creatorVideos = [
   {
@@ -96,7 +188,24 @@ export default function CreatorProfilePage() {
   const [notificationsOn, setNotificationsOn] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
 
-  const creator = creatorData;
+  const creator = getCreatorBySlug(id) ?? getCreatorBySlug("luna");
+
+  const handleShare = () => {
+    const shareData = {
+      title: creator.name,
+      text: `Check out ${creator.name} on StreamVault!`,
+      url: window.location.href,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      navigator.share(shareData).catch((err) => {
+        console.error("Error sharing:", err);
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Profile link copied to clipboard!");
+    }
+  };
 
   const getFilteredContent = (tab: string) => {
     switch (tab) {
@@ -111,9 +220,9 @@ export default function CreatorProfilePage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen">
+      <div className="min-h-screen pb-safe">
         {/* Banner */}
-        <div className="relative h-48 md:h-64 lg:h-80 bg-gradient-primary">
+        <div className="relative h-40 sm:h-48 md:h-64 lg:h-80 bg-gradient-primary">
           <img
             src={creator.banner}
             alt=""
@@ -123,14 +232,14 @@ export default function CreatorProfilePage() {
         </div>
 
         {/* Profile Info */}
-        <div className="container relative -mt-20 md:-mt-24">
+        <div className="container relative -mt-16 sm:-mt-20 md:-mt-24 px-4 sm:px-6">
           <div className="flex flex-col md:flex-row md:items-end gap-4 md:gap-6">
             {/* Avatar */}
-            <div className="relative">
+            <div className="relative flex justify-center md:justify-start">
               <img
                 src={creator.avatar}
                 alt={creator.name}
-                className="h-32 w-32 md:h-40 md:w-40 rounded-2xl border-4 border-background ring-4 ring-primary/20"
+                className="h-28 w-28 sm:h-32 sm:w-32 md:h-40 md:w-40 rounded-2xl border-4 border-background ring-4 ring-primary/20"
               />
               {creator.isLive && (
                 <Badge
@@ -143,84 +252,106 @@ export default function CreatorProfilePage() {
             </div>
 
             {/* Info */}
-            <div className="flex-1 space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-2xl md:text-3xl font-bold">{creator.name}</h1>
-                {creator.isVerified && (
-                  <CheckCircle2 className="h-6 w-6 text-primary fill-primary/20" />
-                )}
+            <div className="flex-1 space-y-3 text-center md:text-left mt-4 md:mt-0">
+              <div className="flex flex-col md:flex-row items-center md:items-baseline gap-2">
+                <div className="flex items-center gap-2">
+                  <h1 className="text-2xl md:text-3xl font-bold">{creator.name}</h1>
+                  {creator.isVerified && (
+                    <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6 text-primary fill-primary/20" />
+                  )}
+                </div>
+                <p className="text-muted-foreground text-sm uppercase tracking-widest font-bold">@{creator.username}</p>
               </div>
-              <p className="text-muted-foreground">@{creator.username}</p>
-              <div className="flex items-center gap-4 text-sm">
-                <span className="flex items-center gap-1">
+              <div className="flex items-center justify-center md:justify-start gap-6 text-sm">
+                <span className="flex items-center gap-1.5 font-bold">
                   <Users className="h-4 w-4 text-primary" />
-                  <strong>{(creator.followers / 1000).toFixed(1)}K</strong> followers
+                  <span>{(creator.followers / 1000).toFixed(1)}K</span>
+                  <span className="text-muted-foreground font-normal">followers</span>
                 </span>
-                {creator.socials.twitter && (
-                  <a
-                    href={`https://twitter.com/${creator.socials.twitter}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </a>
-                )}
-                {creator.socials.instagram && (
-                  <a
-                    href={`https://instagram.com/${creator.socials.instagram}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    <Instagram className="h-5 w-5" />
-                  </a>
-                )}
+                <div className="flex items-center gap-4">
+                  {creator.socials.twitter && (
+                    <a
+                      href={`https://twitter.com/${creator.socials.twitter}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Twitter className="h-5 w-5" />
+                    </a>
+                  )}
+                  {creator.socials.instagram && (
+                    <a
+                      href={`https://instagram.com/${creator.socials.instagram}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      <Instagram className="h-5 w-5" />
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2">
+            <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 w-full md:w-auto pt-4 md:pt-0">
               <Button
                 variant={isSubscribed ? "secondary" : "default"}
-                className={!isSubscribed ? "glow-primary-sm" : ""}
+                className={cn(
+                  "flex-1 xs:flex-none h-11 px-6 rounded-xl font-black uppercase tracking-widest text-[10px]",
+                  !isSubscribed && "glow-primary-sm"
+                )}
                 onClick={() => setIsSubscribed(!isSubscribed)}
               >
-                <Heart className={`h-4 w-4 mr-2 ${isSubscribed ? "fill-current" : ""}`} />
+                <Heart className={cn("h-4 w-4 mr-2", isSubscribed && "fill-current text-pink-500")} />
                 {isSubscribed ? "Subscribed" : "Subscribe"}
               </Button>
-              {isSubscribed && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setNotificationsOn(!notificationsOn)}
+              <div className="flex gap-2 w-full xs:w-auto">
+                {isSubscribed && (
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="flex-1 xs:flex-none h-11 w-11 rounded-xl bg-white/5"
+                    onClick={() => setNotificationsOn(!notificationsOn)}
+                  >
+                    {notificationsOn ? (
+                      <Bell className="h-5 w-5 text-primary" />
+                    ) : (
+                      <BellOff className="h-5 w-5" />
+                    )}
+                  </Button>
+                )}
+                <Button 
+                  variant="secondary" 
+                  size="icon" 
+                  className="flex-1 xs:flex-none h-11 w-11 rounded-xl bg-white/5"
+                  onClick={handleShare}
                 >
-                  {notificationsOn ? (
-                    <Bell className="h-5 w-5 text-primary" />
-                  ) : (
-                    <BellOff className="h-5 w-5" />
-                  )}
+                  <Share2 className="h-5 w-5" />
                 </Button>
-              )}
-              <Button variant="ghost" size="icon">
-                <Share2 className="h-5 w-5" />
-              </Button>
+              </div>
             </div>
           </div>
 
           {/* Bio */}
-          <p className="mt-6 text-muted-foreground max-w-2xl">{creator.bio}</p>
+          <div className="mt-8 text-center md:text-left">
+             <p className="text-muted-foreground max-w-2xl leading-relaxed text-sm font-medium italic">
+                "{creator.bio}"
+             </p>
+          </div>
         </div>
 
         {/* Content Tabs */}
-        <div className="container mt-8 pb-8">
+        <div className="container mt-6 sm:mt-8 pb-8 px-4 sm:px-6">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="w-full max-w-xl grid grid-cols-4 bg-muted/50">
-              <TabsTrigger value="home">Home</TabsTrigger>
-              <TabsTrigger value="free">Free</TabsTrigger>
-              <TabsTrigger value="premium">Premium</TabsTrigger>
-              <TabsTrigger value="about">About</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 mb-6">
+              <TabsList className="w-full min-w-[280px] sm:min-w-[360px] md:min-w-0 md:max-w-xl grid grid-cols-4 bg-muted/50 rounded-2xl p-1 h-11 sm:h-12">
+                <TabsTrigger value="home" className="rounded-xl data-[state=active]:bg-background data-[state=active]:text-primary font-bold">Home</TabsTrigger>
+                <TabsTrigger value="free" className="rounded-xl data-[state=active]:bg-background data-[state=active]:text-primary font-bold">Free</TabsTrigger>
+                <TabsTrigger value="premium" className="rounded-xl data-[state=active]:bg-background data-[state=active]:text-primary font-bold">Premium</TabsTrigger>
+                <TabsTrigger value="about" className="rounded-xl data-[state=active]:bg-background data-[state=active]:text-primary font-bold">About</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="home" className="mt-6 space-y-8">
               {/* Featured Live */}

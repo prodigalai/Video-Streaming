@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginPage() {
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,13 +22,14 @@ export default function LoginPage() {
     // Simulate login
     setTimeout(() => {
       setIsLoading(false);
+      login('creator'); // Simulating logging in as a creator
       toast.success("Welcome back!");
       navigate("/");
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-[#05020d] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] bg-[#05020d] flex items-center justify-center p-4 sm:p-6 pt-safe pb-safe relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="cosmos-particles" />
@@ -34,21 +37,21 @@ export default function LoginPage() {
         <div className="ambient-orb orb-secondary w-[300px] h-[300px] bottom-[0] right-[0] opacity-20" />
       </div>
 
-      <div className="w-full max-w-md z-10 space-y-8">
+      <div className="w-full max-w-md z-10 space-y-6 sm:space-y-8">
         <div className="text-center space-y-2">
-          <Link to="/" className="inline-flex items-center gap-2 group mb-6">
-            <div className="h-10 w-10 rounded-xl overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
+          <Link to="/" className="inline-flex items-center gap-2 group mb-4 sm:mb-6 min-h-[44px] items-center touch-manipulation">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
               <img src="/logo.png" alt="StreamVault" className="h-full w-full object-cover" />
             </div>
-            <span className="text-2xl font-black text-gradient tracking-tight">
+            <span className="text-xl sm:text-2xl font-black text-gradient tracking-tight">
               StreamVault
             </span>
           </Link>
-          <h1 className="text-3xl font-bold text-white">Welcome back</h1>
-          <p className="text-muted-foreground">Enter your credentials to access your account</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Welcome back</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Enter your credentials to access your account</p>
         </div>
 
-        <div className="glass-card p-8 rounded-2xl border-white/10">
+        <div className="glass-card p-5 sm:p-6 md:p-8 rounded-2xl border-white/10">
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

@@ -11,6 +11,23 @@ export default function RewardsPage() {
     toast.success("Referral code copied!");
   };
 
+  const handleShare = () => {
+    const shareData = {
+      title: 'Join me on StreamVault',
+      text: 'Use my referral code ASH123 to get 500 credits on StreamVault!',
+      url: window.location.href,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      navigator.share(shareData).catch((err) => {
+        console.error("Error sharing:", err);
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast.success("Referral link copied to clipboard!");
+    }
+  };
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-background py-12 px-4 space-y-12">
@@ -108,7 +125,12 @@ export default function RewardsPage() {
             </div>
 
             <div className="relative z-10 flex justify-center gap-4">
-              <Button variant="outline" size="icon" className="rounded-full h-12 w-12 border-white/10 hover:bg-white/10">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full h-12 w-12 border-white/10 hover:bg-white/10"
+                onClick={handleShare}
+              >
                 <Share2 className="h-5 w-5" />
               </Button>
                {/* Mock external share buttons */}

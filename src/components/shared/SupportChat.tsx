@@ -92,7 +92,7 @@ export function SupportChat() {
   ].filter(item => item.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-4">
+    <div className="fixed bottom-20 md:bottom-6 right-6 z-[100] flex flex-col items-end gap-4">
       {/* Chat Window */}
       {isOpen && (
         <div className="w-[380px] h-[640px] bg-[#0f0f13] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">

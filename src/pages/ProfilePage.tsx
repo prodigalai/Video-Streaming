@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { LiveChat } from "@/components/live/LiveChat";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,7 +33,7 @@ export default function ProfilePage() {
 
   return (
     <MainLayout>
-      <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-background">
+      <div className="flex-1 flex overflow-hidden bg-background">
         
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col overflow-y-auto scrollbar-thin">
@@ -68,10 +67,10 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Header Bar */}
-          <div className="bg-[#0f0f13] border-b border-white/5 p-6 md:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              <div className="relative -mt-16 rounded-full p-1.5 bg-[#0f0f13]">
-                <Avatar className="h-24 w-24 ring-4 ring-[#0f0f13] shadow-2xl">
+          <div className="bg-[#0f0f13] border-b border-white/5 p-4 sm:p-6 md:px-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6">
+            <div className="flex items-center gap-4 sm:gap-6 min-w-0 flex-1">
+              <div className="relative -mt-12 sm:-mt-16 rounded-full p-1.5 bg-[#0f0f13] shrink-0">
+                <Avatar className="h-20 w-20 sm:h-24 sm:w-24 ring-4 ring-[#0f0f13] shadow-2xl">
                   <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
                   <AvatarFallback className="bg-primary text-black text-2xl font-bold">AN</AvatarFallback>
                 </Avatar>
@@ -82,16 +81,16 @@ export default function ProfilePage() {
                 )}
               </div>
               
-              <div className="space-y-1">
+              <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-2xl font-bold text-white">{username}</h1>
+                  <h1 className="text-xl sm:text-2xl font-bold text-white truncate">{username}</h1>
                 </div>
                 <p className="text-muted-foreground text-sm font-medium">{followers} followers</p>
               </div>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2 self-end md:self-auto mb-2">
+            <div className="flex flex-wrap items-center gap-2 self-end md:self-auto mb-2 shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-9 gap-2 text-white/80 hover:text-white hover:bg-white/10">
@@ -144,9 +143,9 @@ export default function ProfilePage() {
           </div>
 
           {/* Tabs Navigation */}
-          <div className="px-6 md:px-12 mt-2">
-            <Tabs defaultValue="home" className="w-full" onValueChange={setActiveTab}>
-              <TabsList className="h-auto bg-transparent p-0 gap-6 border-b border-transparent w-full justify-start rounded-none">
+          <div className="px-4 sm:px-6 md:px-12 mt-2 overflow-x-auto scrollbar-hide">
+            <Tabs defaultValue="home" className="w-full min-w-0" onValueChange={setActiveTab}>
+              <TabsList className="h-auto bg-transparent p-0 gap-4 sm:gap-6 border-b border-transparent w-full justify-start rounded-none min-w-max">
                 {["Home", "About", "Videos", "Clips"].map((tab) => (
                   <TabsTrigger 
                     key={tab}
@@ -172,12 +171,6 @@ export default function ProfilePage() {
           </div>
 
         </div>
-
-        {/* Right Sidebar - Chat */}
-        <div className="w-[340px] border-l border-white/5 bg-[#0f0f13] hidden lg:block">
-           <LiveChat />
-        </div>
-
       </div>
     </MainLayout>
   );

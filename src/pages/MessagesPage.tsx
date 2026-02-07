@@ -154,16 +154,16 @@ export default function MessagesPage() {
 
   return (
     <MainLayout>
-      <div className="h-[calc(100vh-4rem)] bg-[#05020d] flex overflow-hidden relative">
+      <div className="flex-1 flex flex-col sm:flex-row overflow-hidden bg-background min-h-0">
         
         {/* Sidebar - Conversations List */}
         <div className={cn(
-          "w-full md:w-96 border-r border-white/5 flex flex-col bg-black/40 absolute md:relative z-10 h-full transition-transform duration-300 md:translate-x-0 backdrop-blur-md",
+          "w-full md:w-96 border-r border-white/5 flex flex-col bg-black/40 absolute md:relative z-10 h-full min-h-[100dvh] md:min-h-0 transition-transform duration-300 md:translate-x-0 backdrop-blur-md",
           showMobileChat ? "-translate-x-full md:translate-x-0" : "translate-x-0"
         )}>
           
           {/* Header */}
-          <div className="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
+          <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between shrink-0">
             <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent underline decoration-primary/30 decoration-2 underline-offset-8">Messages</h1>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
               <MoreVertical className="h-4 w-4" />
@@ -250,7 +250,7 @@ export default function MessagesPage() {
           <div className="absolute bottom-1/4 -left-20 w-80 h-80 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
           
           {/* Chat Header */}
-          <div className="h-16 flex items-center justify-between px-4 shrink-0 bg-white/[0.03] backdrop-blur-xl z-20 border-b border-white/5">
+          <div className="h-14 sm:h-16 flex items-center justify-between px-3 sm:px-4 shrink-0 bg-white/[0.03] backdrop-blur-xl z-20 border-b border-white/5">
             <div className="flex items-center gap-2">
               <Button 
                 variant="ghost" 
@@ -343,8 +343,8 @@ export default function MessagesPage() {
           </ScrollArea>
 
           {/* Input Area */}
-          <div className="p-4 border-t border-white/5 bg-white/[0.02] backdrop-blur-xl z-20">
-            <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex items-center gap-3">
+          <div className="p-3 sm:p-4 border-t border-white/5 bg-white/[0.02] backdrop-blur-xl z-20 pb-safe">
+            <form onSubmit={handleSendMessage} className="max-w-4xl mx-auto flex items-center gap-2 sm:gap-3">
               <Button type="button" variant="ghost" size="icon" className="text-muted-foreground hover:text-primary rounded-full h-11 w-11 shrink-0 bg-white/5">
                 <Paperclip className="h-5 w-5" />
               </Button>

@@ -32,9 +32,10 @@ const chatMessages: ChatMessage[] = [
 
 interface LiveChatProps {
   onSendTip?: () => void;
+  showBorder?: boolean;
 }
 
-export function LiveChat({ onSendTip }: LiveChatProps) {
+export function LiveChat({ onSendTip, showBorder = true }: LiveChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(chatMessages);
   const [message, setMessage] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -69,7 +70,10 @@ export function LiveChat({ onSendTip }: LiveChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full border-l border-primary/20 bg-background/95 backdrop-blur-xl">
+    <div className={cn(
+      "flex flex-col h-full bg-background/95 backdrop-blur-xl",
+      showBorder && "border-l border-primary/20"
+    )}>
       {/* Chat Header */}
       <div className="flex items-center justify-between p-4 border-b border-primary/20 bg-background/50">
         <div className="flex items-center gap-2">

@@ -196,7 +196,7 @@ const Index = () => {
 
   return (
     <MainLayout>
-        <div className="relative">
+        <div className="relative overflow-x-hidden min-h-screen">
           {/* Ambient background orbs & Particles */}
           <div className="fixed inset-0 overflow-hidden pointer-events-none">
             <div className="cosmos-particles" />
@@ -205,25 +205,25 @@ const Index = () => {
           </div>
 
           {/* Hero Slider - Cinematic Entry */}
-          <div className="relative z-10 mb-8 lg:mb-0">
+          <div className="relative z-10 mb-6 sm:mb-8 lg:mb-0 pt-safe">
              <HeroSlider streams={featuredStreams} />
           </div>
 
-          <div className="container py-4 lg:py-8 space-y-8 lg:space-y-16 relative z-10">
+          <div className="container px-4 sm:px-6 py-4 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-16 relative z-10 pb-safe">
 
           {/* Categories Section - High Density Browse */}
-          <section className="animate-fade-in" style={{ animationDelay: '100ms' }}>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
+          <section className="animate-fade-in overflow-hidden" style={{ animationDelay: '100ms' }}>
+            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 gap-2">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight flex items-center gap-2 min-w-0">
                 Top Live Categories
               </h2>
-              <Button variant="ghost" size="sm" asChild className="text-primary font-bold hover:bg-primary/10">
+              <Button variant="ghost" size="sm" asChild className="text-primary font-bold hover:bg-primary/10 shrink-0 min-h-[44px] min-w-[44px] touch-manipulation">
                 <Link to="/search" className="flex items-center gap-1">
                   View all
                 </Link>
               </Button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
               {categories.map((cat) => (
                 <CategoryCard key={cat.name} name={cat.name} image={cat.image} count={cat.count} tags={cat.tags} />
               ))}
@@ -247,13 +247,13 @@ const Index = () => {
 
           {/* Featured Live Streams Grid */}
           <section className="animate-fade-in" style={{ animationDelay: '400ms' }}>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-live animate-pulse" />
-                Recommended Streams
+            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-live animate-pulse shrink-0" />
+                <span className="min-w-0">Recommended Streams</span>
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {liveStreams.map((stream, index) => (
                 <div key={stream.id} className="animate-fade-in" style={{ animationDelay: `${index * 50}ms` }}>
                   <StreamCard {...stream} />
@@ -263,16 +263,16 @@ const Index = () => {
           </section>
 
           {/* VOD / Premium Highlights Section */}
-          <section className="animate-fade-in border-t border-border/50 pt-16" style={{ animationDelay: '500ms' }}>
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl md:text-2xl font-black tracking-tight flex items-center gap-3">
-                <div className="h-8 w-8 rounded-lg bg-gradient-primary flex items-center justify-center">
-                  <Star className="h-4 w-4 text-primary-foreground fill-current" />
+          <section className="animate-fade-in border-t border-border/50 pt-8 sm:pt-12 md:pt-16" style={{ animationDelay: '500ms' }}>
+            <div className="flex items-center justify-between mb-4 sm:mb-6 md:mb-8 gap-2">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-black tracking-tight flex items-center gap-2 sm:gap-3 min-w-0">
+                <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-gradient-primary flex items-center justify-center shrink-0">
+                  <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary-foreground fill-current" />
                 </div>
-                <span>Premium Highlights</span>
+                <span className="min-w-0">Premium Highlights</span>
               </h2>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {videos.slice(0, 3).map((video, index) => (
                 <VideoCard key={video.id} {...video} />
               ))}

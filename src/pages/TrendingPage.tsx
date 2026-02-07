@@ -73,8 +73,8 @@ export default function TrendingPage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-[#05020d] text-white">
-        <div className="container py-4 lg:py-8 space-y-6 lg:space-y-12">
+      <div className="min-h-screen bg-[#05020d] text-white pb-safe">
+        <div className="container py-4 lg:py-8 px-4 sm:px-6 space-y-6 lg:space-y-12">
           
           {/* NEW: Cinematic Hero Slider */}
           <TrendingSlider />
@@ -85,7 +85,7 @@ export default function TrendingPage() {
              <div className="lg:col-span-3 space-y-12">
                 
                 {/* Tabs */}
-                <div className="flex items-center gap-4 border-b border-white/5 pb-6">
+                <div className="flex items-center gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 pb-6 border-b border-white/5">
                    {[
                       { id: "all", label: "Everything", icon: TrendingUp },
                       { id: "live", label: "Live Now", icon: Play },
@@ -95,13 +95,13 @@ export default function TrendingPage() {
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={cn(
-                          "flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-xs uppercase tracking-widest transition-all",
+                          "flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap shrink-0",
                           activeTab === tab.id 
                             ? "bg-primary text-black shadow-glow-primary" 
-                            : "text-muted-foreground hover:text-white hover:bg-white/5"
+                            : "text-muted-foreground hover:text-white hover:bg-white/5 bg-white/5"
                         )}
                       >
-                        <tab.icon className="h-4 w-4" />
+                        <tab.icon className="h-3.5 w-3.5" />
                         {tab.label}
                       </button>
                    ))}

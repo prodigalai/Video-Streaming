@@ -203,88 +203,9 @@ export function MadeForYou() {
         </div>
       </div>
 
-      {/* Right Column Sidebar */}
-      <div className="hidden lg:block space-y-8">
-        {/* Suggestions */}
-        <div className="space-y-4">
-           <div className="flex items-center justify-between">
-              <h3 className="font-bold text-white tracking-tight">Suggestions</h3>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-           </div>
-           <div className="space-y-3">
-              {SUGGESTIONS.map((user) => (
-                <div key={user.handle} className="group relative rounded-xl overflow-hidden glass-card p-3 flex items-center justify-between hover:bg-white/5 transition-colors border-white/5">
-                   <div className="flex items-center gap-3">
-                      <div className="relative">
-                         <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.avatar} />
-                            <AvatarFallback>{user.name[0]}</AvatarFallback>
-                         </Avatar>
-                         {user.isLive && (
-                           <span className="absolute -bottom-1 -right-1 h-3 w-3 bg-live rounded-full border-2 border-[#0f0f13]" />
-                         )}
-                      </div>
-                      <div className="min-w-0">
-                         <div className="flex items-center gap-1">
-                            <span className="text-sm font-bold text-white truncate">{user.name}</span>
-                            {user.isVerified && <CheckCircle2 className="h-3 w-3 text-primary fill-primary/20" />}
-                         </div>
-                         <p className="text-[10px] text-muted-foreground tracking-widest uppercase">@{user.handle}</p>
-                      </div>
-                   </div>
-                   <Button size="sm" className="h-8 bg-primary hover:bg-primary/90 text-[10px] font-black uppercase tracking-widest shadow-glow">Follow</Button>
-                </div>
-              ))}
-           </div>
-           {/* Carousel indicators */}
-           <div className="flex justify-center gap-2 pt-2">
-              <div className="h-1 w-4 bg-primary rounded-full" />
-              <div className="h-1 w-1 bg-white/20 rounded-full" />
-              <div className="h-1 w-1 bg-white/20 rounded-full" />
-           </div>
-        </div>
-
-        {/* Streams You Might Like */}
-        <div className="space-y-4 pt-4">
-           <div className="flex items-center justify-between">
-              <h3 className="font-bold text-white tracking-tight flex items-center gap-2">
-                 Streams You Might Like <RefreshCw className="h-3 w-3 text-muted-foreground" />
-              </h3>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-           </div>
-           <div className="space-y-4">
-              {[
-                { name: "ales...", handle: "Yoursexw...", viewers: 31, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=ales", bg: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400" },
-                { name: "Gabbi Goo...", handle: "ExotiqFox", viewers: 47, avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=gabbi", bg: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=400", isVerified: true }
-              ].map((stream) => (
-                <div key={stream.handle} className="relative rounded-xl overflow-hidden aspect-[2/1] group transition-all duration-500 hover:scale-[1.02]">
-                   <img src={stream.bg} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                   <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                       <Button size="sm" className="bg-primary/90 shadow-glow font-black text-[10px] uppercase">Watch Live</Button>
-                   </div>
-                   <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex items-center justify-between">
-                       <div className="flex items-center gap-2">
-                          <Avatar className="h-8 w-8 ring-1 ring-white/20">
-                             <AvatarImage src={stream.avatar} />
-                             <AvatarFallback>{stream.name[0]}</AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0">
-                             <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold text-white truncate">{stream.name}</span>
-                                {stream.isVerified && <CheckCircle2 className="h-2 w-2 text-primary" />}
-                             </div>
-                             <p className="text-[9px] text-white/60 tracking-tighter truncate">@{stream.handle}</p>
-                          </div>
-                       </div>
-                       <Button size="sm" variant="destructive" className="h-7 bg-live text-[9px] font-black uppercase px-2 gap-1.5 shadow-glow-live">
-                          <Users className="h-3 w-3" /> {stream.viewers}
-                       </Button>
-                   </div>
-                </div>
-              ))}
-           </div>
-        </div>
-      </div>
+   
+       
+           
     </div>
   );
 }

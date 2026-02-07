@@ -79,6 +79,8 @@ export default function LiveWatchPage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isTheaterMode, setIsTheaterMode] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isTipModalOpen, setIsTipModalOpen] = useState(false);
 
   // Close mini-player when entering this page
   useEffect(() => {
@@ -100,22 +102,28 @@ export default function LiveWatchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#05020d] relative text-white">
+    <div className="h-screen flex flex-col bg-[#05020d] relative text-white overflow-hidden">
       {/* Cosmos ambient background */}
       <div className="fixed inset-0 pointer-events-none z-0">
          <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,hsla(267,70%,15%,0.3),transparent_70%)]" />
       </div>
       
       {/* Top Navbar */}
-      <TopNavbar />
+      <TopNavbar onMenuToggle={() => setIsSidebarOpen(!isSidebarOpen)} isMenuOpen={isSidebarOpen} />
 
       {/* Main Layout with Sidebar */}
-      <div className="flex pt-16 h-screen overflow-hidden">
+      <div className="flex flex-1 overflow-hidden">
+        {/* Mobile Drawer Overlay */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden animate-fade-in"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* Desktop Sidebar - Hidden in theater mode */}
         {!isTheaterMode && (
-           <div className="hidden lg:block w-64 flex-shrink-0 animate-in slide-in-from-left duration-300">
-              <DesktopSidebar isOpen={true} />
-           </div>
+           <DesktopSidebar isOpen={isSidebarOpen} />
         )}
 
         {/* Content Area */}
@@ -126,7 +134,7 @@ export default function LiveWatchPage() {
             <ScrollArea className="flex-1">
                <div className={cn(
                   "transition-all duration-500",
-                  isTheaterMode ? "w-full" : "container p-4 lg:p-6"
+                  isTheaterMode ? "w-full pb-20 md:pb-0" : "container p-4 lg:p-6 pb-20 md:pb-6"
                )}>
                   {/* Video Player Container */}
                   <div className={cn(
@@ -221,7 +229,7 @@ export default function LiveWatchPage() {
 
           {/* Chat Panel - Fixed on Desktop */}
           <div className="hidden md:flex flex-col border-l border-primary/20 bg-background/95 backdrop-blur-xl w-80 lg:w-96 shadow-2xl relative z-20">
-             <LiveChat onSendTip={() => {}} />
+             <LiveChat onSendTip={() => setIsTipModalOpen(true)} />
           </div>
         </div>
       </div>
@@ -243,7 +251,7 @@ export default function LiveWatchPage() {
                      <span className="font-black text-sm uppercase tracking-widest text-primary">Live Chat</span>
                   </div>
                   <div className="flex-1 overflow-hidden">
-                     <LiveChat onSendTip={() => {}} />
+                     <LiveChat onSendTip={() => setIsTipModalOpen(true)} showBorder={false} />
                   </div>
                </div>
             </DialogContent>
@@ -251,7 +259,7 @@ export default function LiveWatchPage() {
       </div>
 
       {/* Send Tip Modal */}
-      <Dialog>
+      <Dialog open={isTipModalOpen} onOpenChange={setIsTipModalOpen}>
          <DialogHeader>
             <DialogTitle className="sr-only">Support {streamData.creator.name}</DialogTitle>
          </DialogHeader>

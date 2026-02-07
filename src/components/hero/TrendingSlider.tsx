@@ -85,7 +85,7 @@ export function TrendingSlider() {
       <div className="overflow-hidden rounded-[2.5rem] bg-black border border-white/5 shadow-2xl" ref={emblaRef}>
         <div className="flex">
           {featuredItems.map((item) => (
-            <div key={item.id} className="relative flex-[0_0_100%] aspect-[21/9] min-h-[400px]">
+            <div key={item.id} className="relative flex-[0_0_100%] md:aspect-[21/9] aspect-video md:min-h-[400px] min-h-[300px]">
               <img 
                 src={item.thumbnail} 
                 className="absolute inset-0 w-full h-full object-cover opacity-60 transition-scale duration-700 group-hover/slider:scale-105" 

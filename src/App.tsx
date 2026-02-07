@@ -28,6 +28,9 @@ import PricingPage from "./pages/PricingPage";
 import ContactPage from "./pages/ContactPage";
 import RewardsPage from "./pages/RewardsPage";
 import CreatorsPage from "./pages/CreatorsPage";
+import FollowingPage from "./pages/FollowingPage";
+import ExplorePage from "./pages/ExplorePage";
+import HistoryPage from "./pages/HistoryPage";
 
 // Studio Imports
 import { StudioLayout } from "./components/layout/studio/StudioLayout";
@@ -42,26 +45,28 @@ import StudioWalletPage from "./pages/studio/StudioWalletPage";
 import StudioSettingsPage from "./pages/studio/StudioSettingsPage";
 import KYCPage from "./pages/studio/KYCPage";
 
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+
 const queryClient = new QueryClient();
 
-// Simple role simulation
-const userRole = "creator"; // This would normally come from an auth context
-
 const CreatorGuard = ({ children }: { children: React.ReactNode }) => {
-  if (userRole !== "creator") {
-    return <Navigate to="/" replace />;
+  const { user, isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated || user?.role !== "creator") {
+    return <Navigate to="/auth/login" replace />;
   }
   return <>{children}</>;
 };
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <MiniPlayerProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
+    <AuthProvider>
+      <TooltipProvider>
+        <MiniPlayerProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
             {/* Auth Routes */}
             <Route path="/auth/login" element={<LoginPage />} />
             <Route path="/auth/register" element={<RegisterPage />} />
@@ -85,6 +90,9 @@ const App = () => (
             <Route path="/watch/video/:id" element={<VideoWatchPage />} />
             <Route path="/wallet" element={<WalletPage />} />
             <Route path="/subscriptions" element={<SubscriptionsPage />} />
+            <Route path="/following" element={<FollowingPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/history" element={<HistoryPage />} />
             <Route path="/library" element={<LibraryPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/profile" element={<ProfilePage />} />
@@ -120,6 +128,7 @@ const App = () => (
         </BrowserRouter>
       </MiniPlayerProvider>
     </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

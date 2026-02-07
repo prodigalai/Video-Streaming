@@ -94,12 +94,12 @@ export default function NotificationsPage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-[#05020d] text-white">
-        <div className="container max-w-4xl py-8 space-y-8">
+      <div className="min-h-screen bg-[#05020d] text-white pb-safe">
+        <div className="container max-w-4xl py-4 sm:py-6 md:py-8 px-4 sm:px-6 space-y-6 sm:space-y-8">
           
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h1 className="text-3xl font-black uppercase tracking-tighter italic">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black uppercase tracking-tighter italic">
                 Notifications
               </h1>
               <p className="text-muted-foreground text-sm font-medium">
@@ -142,8 +142,8 @@ export default function NotificationsPage() {
             </Button>
           </div>
 
-          <ScrollArea className="h-[600px] rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden">
-            <div className="p-4 space-y-2">
+          <ScrollArea className="min-h-[50vh] max-h-[600px] sm:h-[600px] rounded-2xl border border-white/5 bg-white/[0.02] overflow-hidden">
+            <div className="p-3 sm:p-4 space-y-2">
               {filteredNotifications.length > 0 ? (
                 filteredNotifications.map((notification) => (
                   <div

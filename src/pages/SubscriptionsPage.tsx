@@ -83,7 +83,7 @@ export default function SubscriptionsPage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
               <p className="text-3xl font-bold text-primary">{activeSubscriptions.length}</p>
@@ -96,7 +96,7 @@ export default function SubscriptionsPage() {
               <p className="text-sm text-muted-foreground">Expired</p>
             </CardContent>
           </Card>
-          <Card className="col-span-2">
+          <Card className="xs:col-span-2">
             <CardContent className="p-4 text-center">
               <p className="text-3xl font-bold text-primary">
                 {activeSubscriptions.reduce((sum, s) => sum + s.price, 0)}

@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface TopNavbarProps {
   onMenuToggle?: () => void;
@@ -19,6 +20,7 @@ interface TopNavbarProps {
 }
 
 export function TopNavbar({ onMenuToggle, isMenuOpen }: TopNavbarProps) {
+  const { user, logout, isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isMobileSearchVisible, setIsMobileSearchVisible] = useState(false);
@@ -33,7 +35,7 @@ export function TopNavbar({ onMenuToggle, isMenuOpen }: TopNavbarProps) {
   };
 
   return (
-    <header className="h-14 w-full shrink-0 z-50 relative border-b border-primary/20 bg-background/80 backdrop-blur-xl overflow-hidden">
+    <header className="h-14 w-full shrink-0 z-50 sticky top-0 border-b border-primary/20 bg-background/80 backdrop-blur-xl overflow-hidden">
       <div className="px-3 sm:px-4 flex h-full items-center gap-2 sm:gap-4">
         {/* Left: Logo & Menu */}
         {!isMobileSearchVisible && (
@@ -110,111 +112,123 @@ export function TopNavbar({ onMenuToggle, isMenuOpen }: TopNavbarProps) {
             <Search className="h-5 w-5" />
           </Button>
 
-          {/* Wallet */}
-          <Link to="/wallet">
-            <Button variant="ghost" className="hidden xs:flex items-center gap-2 hover:bg-primary/10 rounded-lg h-9 px-2 sm:px-3 text-sm shrink-0">
-              <Wallet className="h-4 w-4 text-primary" />
-              <span className="font-semibold text-gradient">1,250</span>
-            </Button>
-          </Link>
+          {/* Auth Actions */}
+          {isAuthenticated ? (
+            <>
+              {/* Wallet */}
+              <Link to="/wallet">
+                <Button variant="ghost" className="hidden xs:flex items-center gap-2 hover:bg-primary/10 rounded-lg h-9 px-2 sm:px-3 text-sm shrink-0">
+                  <Wallet className="h-4 w-4 text-primary" />
+                  <span className="font-semibold text-gradient">{user?.credits || 0}</span>
+                </Button>
+              </Link>
 
-          {/* DMs */}
-          <Link to="/messages">
-            <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 rounded-lg h-9 w-9">
-              <Mail className="h-4 w-4" />
-            </Button>
-          </Link>
+              {/* DMs */}
+              <Link to="/messages">
+                <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 rounded-lg h-9 w-9">
+                  <Mail className="h-4 w-4" />
+                </Button>
+              </Link>
 
-          {/* Notifications */}
-          <Link to="/notifications">
-            <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 rounded-lg h-9 w-9">
-              <Bell className="h-4 w-4" />
-              <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-live ring-2 ring-background animate-pulse" />
-            </Button>
-          </Link>
+              {/* Notifications */}
+              <Link to="/notifications">
+                <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 rounded-lg h-9 w-9">
+                  <Bell className="h-4 w-4" />
+                  <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-live ring-2 ring-background animate-pulse" />
+                </Button>
+              </Link>
 
-          {/* Profile */}
-            <div className="hidden sm:flex items-center">
-              <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 rounded-lg border border-white/20 h-9 w-9">
-                <Avatar className="h-7 w-7 ring-2 ring-border hover:ring-primary/50 transition-all duration-300">
-                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80 glass-strong rounded-2xl border-white/5 p-0 mt-2 shadow-2xl bg-[#0f0f13]/95 text-white">
-              
-              {/* User Header */}
-              <div className="flex flex-col items-center justify-center p-6 pb-4 bg-white/5 border-b border-white/5">
-                <Avatar className="h-16 w-16 mb-3 ring-4 ring-white/10 shadow-xl">
-                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
-                  <AvatarFallback className="text-xl font-bold bg-primary/20 text-primary">AN</AvatarFallback>
-                </Avatar>
-                <h3 className="font-bold text-lg mb-1">AshN0408</h3>
-                <Link to="/profile" className="w-full">
-                  <Button className="w-full mt-3 bg-white/10 hover:bg-white/20 text-white border-none h-10 font-medium tracking-wide">
-                    View your channel
-                  </Button>
-                </Link>
+              {/* Profile */}
+              <div className="flex items-center ml-1">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="relative hover:bg-primary/10 rounded-lg border border-white/20 h-9 w-9">
+                      <Avatar className="h-7 w-7 ring-2 ring-border hover:ring-primary/50 transition-all duration-300">
+                        <AvatarImage src={user?.avatar} />
+                        <AvatarFallback>{user?.name?.[0] || 'U'}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-80 glass-strong rounded-2xl border-white/5 p-0 mt-2 shadow-2xl bg-[#0f0f13]/95 text-white">
+                    {/* User Header */}
+                    <div className="flex flex-col items-center justify-center p-6 pb-4 bg-white/5 border-b border-white/5">
+                      <Avatar className="h-16 w-16 mb-3 ring-4 ring-white/10 shadow-xl">
+                        <AvatarImage src={user?.avatar} />
+                        <AvatarFallback className="text-xl font-bold bg-primary/20 text-primary">{user?.name?.[0] || 'U'}</AvatarFallback>
+                      </Avatar>
+                      <h3 className="font-bold text-lg mb-1">{user?.name}</h3>
+                      <Link to="/profile" className="w-full">
+                        <Button className="w-full mt-3 bg-white/10 hover:bg-white/20 text-white border-none h-10 font-medium tracking-wide">
+                          View your channel
+                        </Button>
+                      </Link>
+                    </div>
+
+                    {/* Menu Items */}
+                    <div className="p-2 space-y-1">
+                      {user?.role === 'creator' && (
+                        <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
+                          <Link to="/studio/dashboard" className="flex items-center gap-4 px-3">
+                            <LayoutDashboard className="h-5 w-5 text-gray-400" />
+                            <span className="font-medium text-[15px]">Creator dashboard</span>
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
+
+                      <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
+                        <Link to="/subscriptions" className="flex items-center gap-4 px-3">
+                          <Sparkles className="h-5 w-5 text-gray-400" />
+                          <span className="font-medium text-[15px]">Subscriptions</span>
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
+                        <Link to="/rewards" className="flex items-center gap-4 px-3">
+                          <Gift className="h-5 w-5 text-gray-400" />
+                          <span className="font-medium text-[15px]">Drops & rewards</span>
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <div className="h-px bg-white/10 my-1 mx-2" />
+                      
+                      <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
+                        <Link to="/settings" className="flex items-center gap-4 px-3">
+                          <Settings className="h-5 w-5 text-gray-400" />
+                          <span className="font-medium text-[15px]">Settings</span>
+                        </Link>
+                      </DropdownMenuItem>
+
+                      <div className="h-px bg-white/10 my-1 mx-2" />
+
+                      <DropdownMenuItem 
+                        onClick={() => {
+                          logout();
+                          navigate("/");
+                        }}
+                        className="rounded-lg focus:bg-white/10 cursor-pointer h-12 flex items-center gap-4 px-3 text-red-400 focus:text-red-400"
+                      >
+                        <LogOut className="h-5 w-5" />
+                        <span className="font-medium text-[15px]">Log out</span>
+                      </DropdownMenuItem>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-
-              {/* Menu Items */}
-              <div className="p-2 space-y-1">
-                
-                <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
-                  <Link to="/studio/dashboard" className="flex items-center gap-4 px-3">
-                    <LayoutDashboard className="h-5 w-5 text-gray-400" />
-                    <span className="font-medium text-[15px]">Creator dashboard</span>
-                  </Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
-                  <Link to="/subscriptions" className="flex items-center gap-4 px-3">
-                    <Sparkles className="h-5 w-5 text-gray-400" />
-                    <span className="font-medium text-[15px]">Subscriptions</span>
-                  </Link>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
-                  <Link to="/rewards" className="flex items-center gap-4 px-3">
-                    <Gift className="h-5 w-5 text-gray-400" />
-                    <span className="font-medium text-[15px]">Drops & rewards</span>
-                  </Link>
-                </DropdownMenuItem>
-
-                <div className="h-px bg-white/10 my-1 mx-2" />
-
-                <DropdownMenuItem className="rounded-lg focus:bg-white/10 cursor-pointer h-12 flex items-center justify-between px-3">
-                  <div className="flex items-center gap-4">
-                    <Globe className="h-5 w-5 text-gray-400" />
-                    <span className="font-medium text-[15px]">Display language</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-gray-400">
-                    <span className="text-sm font-medium">EN</span>
-                    <ChevronRight className="h-4 w-4" />
-                  </div>
-                </DropdownMenuItem>
-                
-                <DropdownMenuItem asChild className="rounded-lg focus:bg-white/10 cursor-pointer h-12">
-                  <Link to="/settings" className="flex items-center gap-4 px-3">
-                    <Settings className="h-5 w-5 text-gray-400" />
-                    <span className="font-medium text-[15px]">Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-
-                <div className="h-px bg-white/10 my-1 mx-2" />
-
-                <DropdownMenuItem className="rounded-lg focus:bg-white/10 cursor-pointer h-12 flex items-center gap-4 px-3">
-                  <LogOut className="h-5 w-5 text-gray-400" />
-                  <span className="font-medium text-[15px]">Log out</span>
-                </DropdownMenuItem>
-
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link to="/auth/login">
+                <Button variant="ghost" className="h-9 px-4 font-bold text-sm rounded-lg hover:bg-white/5 transition-colors">
+                  Log In
+                </Button>
+              </Link>
+              <Link to="/auth/register">
+                <Button className="h-9 px-4 font-bold text-sm rounded-lg bg-primary text-black hover:shadow-glow transition-all">
+                  Sign Up
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </header>

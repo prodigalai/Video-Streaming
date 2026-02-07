@@ -78,15 +78,15 @@ export default function WalletPage() {
 
   return (
     <MainLayout>
-      <div className="container py-6 space-y-6">
+      <div className="container py-4 sm:py-6 px-4 sm:px-6 space-y-4 sm:space-y-6 pb-safe">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-              <Wallet className="h-7 w-7 text-primary" />
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center gap-2 truncate">
+              <Wallet className="h-6 w-6 sm:h-7 sm:w-7 text-primary shrink-0" />
               Wallet
             </h1>
-            <p className="text-muted-foreground">Manage your credits and payments</p>
+            <p className="text-sm text-muted-foreground">Manage your credits and payments</p>
           </div>
         </div>
 
@@ -94,8 +94,8 @@ export default function WalletPage() {
         <Card className="bg-gradient-primary text-primary-foreground overflow-hidden relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="p-6 md:p-8 relative">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div>
+            <div className="flex flex-col md:flex-row items-center md:justify-between text-center md:text-left gap-6">
+              <div className="flex flex-col items-center md:items-start">
                 <p className="text-primary-foreground/70 mb-1">Available Balance</p>
                 <div className="flex items-baseline gap-2">
                   <Coins className="h-8 w-8" />
@@ -116,7 +116,7 @@ export default function WalletPage() {
                     Add Credits
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-lg">
+                <DialogContent className="max-w-lg w-[calc(100vw-2rem)] max-h-[90dvh] overflow-y-auto">
                   {paymentStatus === "idle" && (
                     <>
                       <DialogHeader>
@@ -124,7 +124,7 @@ export default function WalletPage() {
                       </DialogHeader>
                       <div className="space-y-6 py-4">
                         {/* Credit Packages */}
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           {creditPackages.map((pkg, i) => (
                             <button
                               key={pkg.credits}
@@ -238,9 +238,9 @@ export default function WalletPage() {
               {transactions.map((tx) => (
                 <div
                   key={tx.id}
-                  className="flex items-center justify-between p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+                  className="flex items-center justify-between gap-2 p-3 sm:p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors min-w-0"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
                     <div className={cn(
                       "h-10 w-10 rounded-full flex items-center justify-center",
                       tx.amount > 0 ? "bg-success/20" : "bg-muted"
@@ -251,12 +251,12 @@ export default function WalletPage() {
                         <ArrowUpRight className="h-5 w-5 text-muted-foreground" />
                       )}
                     </div>
-                    <div>
-                      <p className="font-medium">{tx.description}</p>
-                      <p className="text-sm text-muted-foreground">{tx.date}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium truncate">{tx.description}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground">{tx.date}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className={cn(
                       "font-semibold",
                       tx.amount > 0 ? "text-success" : "text-foreground"

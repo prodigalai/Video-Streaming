@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RegisterPage() {
+  const { login } = useAuth();
   const [role, setRole] = useState<'fan' | 'creator' | 'agent'>('fan');
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,14 +28,17 @@ export default function RegisterPage() {
     // Simulate registration
     setTimeout(() => {
       setIsLoading(false);
-      toast.success("Account created successfully! Please verify your email.");
-      // In a real app, redirect to OTP or Onboarding
-      navigate("/auth/login");
+      // Map 'fan' to 'viewer' for internal role
+      const internalRole = role === 'fan' ? 'viewer' : (role as any);
+      login(internalRole);
+      
+      toast.success("Account created successfully!");
+      navigate("/");
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-[#05020d] flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen min-h-[100dvh] bg-[#05020d] flex items-center justify-center p-4 sm:p-6 pt-safe pb-safe relative overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="cosmos-particles" />
@@ -41,22 +46,22 @@ export default function RegisterPage() {
         <div className="ambient-orb orb-secondary w-[300px] h-[300px] bottom-[0] left-[0] opacity-20" />
       </div>
 
-      <div className="w-full max-w-md z-10 space-y-8">
+      <div className="w-full max-w-md z-10 space-y-6 sm:space-y-8 overflow-y-auto max-h-[100dvh] py-4">
         <div className="text-center space-y-2">
-          <Link to="/" className="inline-flex items-center gap-2 group mb-6">
-            <div className="h-10 w-10 rounded-xl overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
+          <Link to="/" className="inline-flex items-center gap-2 group mb-4 sm:mb-6 min-h-[44px] items-center touch-manipulation">
+            <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
               <img src="/logo.png" alt="StreamVault" className="h-full w-full object-cover" />
             </div>
-            <span className="text-2xl font-black text-gradient tracking-tight">
+            <span className="text-xl sm:text-2xl font-black text-gradient tracking-tight">
               StreamVault
             </span>
           </Link>
-          <h1 className="text-3xl font-bold text-white">Create an account</h1>
-          <p className="text-muted-foreground">Join the future of streaming and monetization</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Create an account</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Join the future of streaming and monetization</p>
         </div>
 
-        <div className="glass-card p-8 rounded-2xl border-white/10">
-          <form onSubmit={handleRegister} className="space-y-6">
+        <div className="glass-card p-5 sm:p-6 md:p-8 rounded-2xl border-white/10">
+          <form onSubmit={handleRegister} className="space-y-5 sm:space-y-6">
             
             {/* Role Selection */}
             <div className="space-y-3">
@@ -98,7 +103,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
                 <div className="relative">
@@ -106,7 +111,7 @@ export default function RegisterPage() {
                   <Input 
                     id="name" 
                     placeholder="John Doe" 
-                    className="pl-10 bg-white/5 border-white/10 h-11"
+                    className="pl-10 bg-white/5 border-white/10 h-11 min-h-[44px]"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     required
@@ -119,7 +124,7 @@ export default function RegisterPage() {
                   <Input 
                     id="dob" 
                     type="date"
-                    className="bg-white/5 border-white/10 h-11"
+                    className="bg-white/5 border-white/10 h-11 min-h-[44px]"
                     onChange={(e) => setFormData({...formData, dob: e.target.value})}
                     required
                   />

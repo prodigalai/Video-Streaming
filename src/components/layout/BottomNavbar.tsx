@@ -1,18 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Radio, Wallet, User } from "lucide-react";
+import { Home, Radio, User, Compass, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
+  { icon: Compass, label: "Explore", path: "/explore" },
   { icon: Radio, label: "Live", path: "/live" },
-  { icon: Wallet, label: "Wallet", path: "/wallet" },
+  { icon: Users, label: "Following", path: "/following" },
+  { icon: User, label: "Profile", path: "/profile" },
 ];
 
 export function BottomNavbar() {
   const location = useLocation();
 
   return (
-    <nav className="w-full shrink-0 z-50 relative lg:hidden border-t border-white/15 bg-black/90 backdrop-blur-xl pb-safe shadow-[0_-1px_10px_rgba(0,0,0,1)]">
+    <nav className="w-full shrink-0 z-50 fixed bottom-0 left-0 right-0 lg:hidden border-t border-white/15 bg-black/95 backdrop-blur-xl pb-safe shadow-[0_-1px_10px_rgba(0,0,0,1)]">
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
