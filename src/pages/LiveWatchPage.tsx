@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Users, Minimize2, Gift, Sparkles, Maximize, Shrink } from "lucide-react";
+import { Users, Minimize2, Gift, Sparkles, Maximize, Shrink, Tv, Minimize } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -101,6 +101,34 @@ export default function LiveWatchPage() {
     navigate(-1);
   };
 
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullScreenChange);
+  }, []);
+
+  const toggleFullScreen = async () => {
+    if (!document.fullscreenElement) {
+      if (playerContainerRef.current) {
+        try {
+          await playerContainerRef.current.requestFullscreen();
+        } catch (err) {
+          console.error("Error attempting to enable full-screen mode:", err);
+        }
+      }
+    } else {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      }
+    }
+  };
+
   return (
     <div className="h-screen flex flex-col bg-[#05020d] relative text-white overflow-hidden">
       {/* Cosmos ambient background */}
@@ -137,7 +165,7 @@ export default function LiveWatchPage() {
                   isTheaterMode ? "w-full pb-20 md:pb-0" : "container p-4 lg:p-6 pb-20 md:pb-6"
                )}>
                   {/* Video Player Container */}
-                  <div className={cn(
+                  <div ref={playerContainerRef} className={cn(
                      "relative bg-black group transition-all duration-500 shadow-2xl overflow-hidden",
                      isTheaterMode ? "w-full aspect-[21/9]" : "aspect-video rounded-3xl border border-white/5"
                   )}>
@@ -166,9 +194,23 @@ export default function LiveWatchPage() {
                                  variant="ghost"
                                  size="icon"
                                  className="h-10 w-10 rounded-xl bg-black/60 hover:bg-primary text-white border border-white/10"
+                                 onClick={toggleFullScreen}
+                              >
+                                 {isFullScreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+                              </Button>
+                           </TooltipTrigger>
+                           <TooltipContent side="bottom">Full Screen</TooltipContent>
+                        </Tooltip>
+
+                        <Tooltip>
+                           <TooltipTrigger asChild>
+                              <Button
+                                 variant="ghost"
+                                 size="icon"
+                                 className="h-10 w-10 rounded-xl bg-black/60 hover:bg-primary text-white border border-white/10"
                                  onClick={() => setIsTheaterMode(!isTheaterMode)}
                               >
-                                 {isTheaterMode ? <Shrink className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+                                 {isTheaterMode ? <Shrink className="h-5 w-5" /> : <Tv className="h-5 w-5" />}
                               </Button>
                            </TooltipTrigger>
                            <TooltipContent side="bottom">Theater Mode</TooltipContent>

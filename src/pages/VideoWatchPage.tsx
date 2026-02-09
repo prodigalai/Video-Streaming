@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { 
   Play, 
@@ -13,7 +13,8 @@ import {
   ChevronDown,
   CheckCircle2,
   ThumbsUp,
-  ThumbsDown
+  ThumbsDown,
+  Minimize
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,6 +93,33 @@ export default function VideoWatchPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const videoContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullScreenChange);
+    return () => document.removeEventListener("fullscreenchange", handleFullScreenChange);
+  }, []);
+
+  const toggleFullScreen = async () => {
+      if (!document.fullscreenElement) {
+        if (videoContainerRef.current) {
+          try {
+            await videoContainerRef.current.requestFullscreen();
+          } catch (err) {
+            console.error("Error attempting to enable full-screen mode:", err);
+          }
+        }
+      } else {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        }
+      }
+    };
 
   // Use locked video for demo if id matches
   const video = id === "v2" ? lockedVideoData : videoData;
@@ -126,7 +154,7 @@ export default function VideoWatchPage() {
             {/* Main Content Area */}
             <div className="lg:col-span-2 space-y-8">
               {/* Cinematic Video Player Container */}
-              <div className="relative aspect-video rounded-3xl overflow-hidden bg-black group shadow-2xl border border-white/5">
+              <div ref={videoContainerRef} className="relative aspect-video rounded-3xl overflow-hidden bg-black group shadow-2xl border border-white/5">
                 <img
                   src={video.thumbnail}
                   alt={video.title}
@@ -195,8 +223,9 @@ export default function VideoWatchPage() {
                           variant="ghost"
                           size="icon"
                           className="h-10 w-10 text-white rounded-xl hover:bg-primary/20 hover:text-primary transition-colors"
+                          onClick={toggleFullScreen}
                         >
-                          <Maximize className="h-6 w-6" />
+                          {isFullScreen ? <Minimize className="h-6 w-6" /> : <Maximize className="h-6 w-6" />}
                         </Button>
                       </div>
                     </div>
