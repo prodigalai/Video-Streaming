@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ContentUploadModal } from "@/components/content/ContentUploadModal";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface StudioNavbarProps {
   onMenuToggle?: () => void;
@@ -23,10 +24,11 @@ export function StudioNavbar({ onMenuToggle, isMenuOpen }: StudioNavbarProps) {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   return (
     <>
-      <ContentUploadModal open={isUploadOpen} onOpenChange={setIsUploadOpen} />
+      <ContentUploadModal open={isUploadOpen} onOpenChange={setIsUploadOpen} children={""} />
       <header className="fixed top-0 left-0 right-0 z-50 h-14 border-b border-primary/20 bg-background/80 backdrop-blur-xl">
         <div className="px-4 flex h-full items-center justify-between gap-4">
           {/* Left: Logo & Menu */}
@@ -44,7 +46,7 @@ export function StudioNavbar({ onMenuToggle, isMenuOpen }: StudioNavbarProps) {
                 <Video className="h-4 w-4 text-primary-foreground" />
               </div>
               <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-lg font-bold text-gradient tracking-tight">Studio</span>
+                <span className="text-lg font-bold text-gradient tracking-tight">Creator</span>
               </div>
             </Link>
             <div className="hidden md:block h-6 w-px bg-border/40 mx-2" />
@@ -133,7 +135,7 @@ export function StudioNavbar({ onMenuToggle, isMenuOpen }: StudioNavbarProps) {
                     <AvatarFallback>U</AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-semibold leading-none">Creator Studio</p>
+                    <p className="font-semibold leading-none">Creator</p>
                     <p className="text-xs text-muted-foreground mt-1">@creator_pro</p>
                   </div>
                 </Link>
@@ -144,7 +146,13 @@ export function StudioNavbar({ onMenuToggle, isMenuOpen }: StudioNavbarProps) {
                   <span>View Channel</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive rounded-lg focus:bg-destructive/10">
+              <DropdownMenuItem 
+                onClick={() => {
+                  logout();
+                  navigate('/');
+                }}
+                className="text-destructive rounded-lg focus:bg-destructive/10 cursor-pointer"
+              >
                 Sign Out
               </DropdownMenuItem>
             </DropdownMenuContent>

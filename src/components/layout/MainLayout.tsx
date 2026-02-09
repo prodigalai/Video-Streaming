@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { TopNavbar } from "./TopNavbar";
 import { BottomNavbar } from "./BottomNavbar";
@@ -6,6 +6,7 @@ import { DesktopSidebar } from "./DesktopSidebar";
 import { Footer } from "./Footer";
 import { SupportChat } from "../shared/SupportChat";
 import { cn } from "@/lib/utils";
+import { useScrollToTop } from "@/hooks/useScrollToTop";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -14,6 +15,9 @@ interface MainLayoutProps {
 export function MainLayout({ children }: MainLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { pathname } = useLocation();
+  const mainRef = useRef<HTMLElement>(null);
+
+  useScrollToTop(mainRef);
 
   // Handle responsive sidebar initial state and route changes
   useEffect(() => {
@@ -52,6 +56,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         <DesktopSidebar isOpen={isSidebarOpen} />
         
         <main
+          ref={mainRef}
           className={cn(
             "flex-1 overflow-y-auto w-full transition-all duration-300 relative flex flex-col scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent hover:scrollbar-thumb-primary/40 pb-20 lg:pb-0",
           )}

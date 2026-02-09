@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Library, Play, Bookmark, Clock, Trash2 } from "lucide-react";
+import { Library, Play, Bookmark, Clock, Trash2, Box, Shield, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VideoCard } from "@/components/cards/VideoCard";
 import { StreamCard } from "@/components/cards/StreamCard";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { EmptyState } from "@/components/shared/EmptyState";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 // Mock data
 const unlockedVideos = [
@@ -50,163 +52,118 @@ const savedStreams = [
   },
 ];
 
-const watchHistory = [
-  {
-    id: "h1",
-    title: "Cooking Italian Pasta from Scratch - Replay",
-    thumbnail: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=338&fit=crop",
-    creator: { name: "ChefMaria", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=maria" },
-    viewers: 3201,
-    category: "Cooking",
-    isLive: false,
-    watchedAt: "2 hours ago",
-    progress: 75,
-  },
-  {
-    id: "h2",
-    title: "Music Production Live Session - Replay",
-    thumbnail: "https://images.unsplash.com/photo-1598653222000-6b7b7a552625?w=600&h=338&fit=crop",
-    creator: { name: "BeatMaster", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=beat" },
-    viewers: 5678,
-    category: "Music",
-    isLive: false,
-    watchedAt: "Yesterday",
-    progress: 100,
-  },
-  {
-    id: "v4",
-    title: "My Daily Skincare Routine - All Products",
-    thumbnail: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=600&h=338&fit=crop",
-    creator: { name: "BeautyBella", avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=bella" },
-    duration: "12:45",
-    views: 67000,
-    watchedAt: "3 days ago",
-    progress: 50,
-  },
-];
-
 export default function LibraryPage() {
   const [activeTab, setActiveTab] = useState("unlocked");
 
   return (
     <MainLayout>
-      <div className="container py-6 space-y-6">
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-            <Library className="h-7 w-7 text-primary" />
-            My Library
-          </h1>
-          <p className="text-muted-foreground">Your purchased content and watch history</p>
-        </div>
-
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full max-w-lg grid grid-cols-3 bg-muted/50">
-            <TabsTrigger value="unlocked">
-              <Play className="h-4 w-4 mr-2" />
-              Unlocked
-            </TabsTrigger>
-            <TabsTrigger value="saved">
-              <Bookmark className="h-4 w-4 mr-2" />
-              Saved
-            </TabsTrigger>
-            <TabsTrigger value="history">
-              <Clock className="h-4 w-4 mr-2" />
-              History
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Unlocked Videos */}
-          <TabsContent value="unlocked" className="mt-6">
-            {unlockedVideos.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {unlockedVideos.map((video) => (
-                  <VideoCard key={video.id} {...video} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                icon={<Play className="h-10 w-10 text-muted-foreground" />}
-                title="No Unlocked Content"
-                description="Videos you purchase will appear here."
-                action={{
-                  label: "Browse Videos",
-                  onClick: () => {},
-                }}
-              />
-            )}
-          </TabsContent>
-
-          {/* Saved Streams */}
-          <TabsContent value="saved" className="mt-6">
-            {savedStreams.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {savedStreams.map((stream) => (
-                  <div key={stream.id} className="relative group">
-                    <StreamCard {...stream} />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-background/80"
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
+      <div className="min-h-screen bg-[#050508] relative overflow-hidden pb-20">
+        
+        {/* Ambient background decoration */}
+        <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-blue-600/[0.04] to-transparent -z-10 pointer-events-none" />
+        
+        <div className="container py-12 px-4 sm:px-6 space-y-12">
+          
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div className="space-y-3">
+               <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                      <Library className="h-5 w-5 text-white" />
                   </div>
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                icon={<Bookmark className="h-10 w-10 text-muted-foreground" />}
-                title="No Saved Streams"
-                description="Save stream replays to watch later."
-              />
-            )}
-          </TabsContent>
+                  <h1 className="text-4xl font-black text-white uppercase tracking-tight">Signal Vault</h1>
+               </div>
+               <p className="text-sm font-medium text-white/40 italic">Centralized storage for your unlocked content and saved transmissions.</p>
+            </div>
+          </div>
 
-          {/* Watch History */}
-          <TabsContent value="history" className="mt-6">
-            {watchHistory.length > 0 ? (
-              <div className="space-y-6">
-                <div className="flex justify-end">
-                  <Button variant="ghost" size="sm" className="text-destructive">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Clear History
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {watchHistory.map((item) => (
-                    <div key={item.id} className="relative">
-                      {item.duration ? (
-                        <VideoCard id={item.id} title={item.title} thumbnail={item.thumbnail} creator={item.creator} duration={item.duration} views={item.views || 0} />
-                      ) : (
-                        <StreamCard id={item.id} title={item.title} thumbnail={item.thumbnail} creator={item.creator} viewers={item.viewers || 0} category={item.category || ""} isLive={false} />
-                      )}
-                      {/* Progress bar */}
-                      {item.progress && item.progress < 100 && (
-                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-muted">
-                          <div
-                            className="h-full bg-primary"
-                            style={{ width: `${item.progress}%` }}
-                          />
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-12">
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+               <TabsList className="bg-white/5 p-1 rounded-2xl h-12">
+                  <TabsTrigger value="unlocked" className="rounded-xl px-8 data-[state=active]:bg-violet-600 data-[state=active]:text-white font-black text-[10px] uppercase tracking-widest">
+                     <Play className="h-3.5 w-3.5 mr-2" />
+                     UNLOCKED
+                  </TabsTrigger>
+                  <TabsTrigger value="saved" className="rounded-xl px-8 data-[state=active]:bg-violet-600 data-[state=active]:text-white font-black text-[10px] uppercase tracking-widest">
+                     <Bookmark className="h-3.5 w-3.5 mr-2" />
+                     BOOKMARKED
+                  </TabsTrigger>
+               </TabsList>
+            </div>
+
+            <AnimatePresence mode="wait">
+               <TabsContent value="unlocked" className="mt-0 focus-visible:outline-none">
+                  {unlockedVideos.length > 0 ? (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                    >
+                      {unlockedVideos.map((video) => (
+                        <VideoCard key={video.id} {...video} />
+                      ))}
+                    </motion.div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-32 text-center space-y-8">
+                        <div className="h-24 w-24 rounded-[2rem] bg-white/[0.02] border border-dashed border-white/10 flex items-center justify-center">
+                           <Box className="h-10 w-10 text-white/5" />
                         </div>
-                      )}
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Watched {item.watchedAt}
-                      </p>
+                        <div className="space-y-2">
+                           <h3 className="text-2xl font-black text-white uppercase tracking-tight">Vault Empty</h3>
+                           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">You haven't unlocked any secure content nodes yet.</p>
+                        </div>
+                        <Button className="h-12 px-8 bg-violet-600 hover:bg-violet-700 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-xl shadow-violet-500/20 border-none">
+                           DISCOVER CONTENT
+                        </Button>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <EmptyState
-                icon={<Clock className="h-10 w-10 text-muted-foreground" />}
-                title="No Watch History"
-                description="Your watch history will appear here."
-              />
-            )}
-          </TabsContent>
-        </Tabs>
+                  )}
+               </TabsContent>
+
+               <TabsContent value="saved" className="mt-0 focus-visible:outline-none">
+                  {savedStreams.length > 0 ? (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+                    >
+                      {savedStreams.map((stream) => (
+                        <div key={stream.id} className="relative group">
+                          <StreamCard {...stream} />
+                          <div className="absolute top-4 right-4 z-20">
+                             <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 text-white opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500/80 hover:border-red-500"
+                             >
+                                <Trash2 className="h-4 w-4" />
+                             </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </motion.div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-32 text-center space-y-8">
+                        <div className="h-24 w-24 rounded-[2rem] bg-white/[0.02] border border-dashed border-white/10 flex items-center justify-center">
+                           <Bookmark className="h-10 w-10 text-white/5" />
+                        </div>
+                        <div className="space-y-2">
+                           <h3 className="text-2xl font-black text-white uppercase tracking-tight">Bookmarks Empty</h3>
+                           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20">No transmissions have been flagged for later viewing.</p>
+                        </div>
+                    </div>
+                  )}
+               </TabsContent>
+            </AnimatePresence>
+          </Tabs>
+
+          <div className="text-center pt-20">
+             <div className="inline-flex items-center gap-4 px-8 py-3 rounded-full bg-white/[0.02] border border-white/5 opacity-30">
+                <Shield className="h-3.5 w-3.5 text-violet-400" />
+                <span className="text-[9px] font-black uppercase tracking-[0.5em]">Vault Integrity: SECURE / 2026</span>
+             </div>
+          </div>
+        </div>
       </div>
     </MainLayout>
   );

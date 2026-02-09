@@ -1,96 +1,138 @@
-import { DollarSign, Wallet, ArrowRight, History, Download, CreditCard, ChevronRight, PieChart as PieIcon, TrendingUp, HandCoins, ShieldCheck } from "lucide-react";
+import { DollarSign, Wallet, ArrowRight, History, Download, CreditCard, ChevronRight, TrendingUp, HandCoins, ShieldCheck, Zap, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-
+import { motion, AnimatePresence } from "framer-motion";
 
 const transactions = [
-  { id: 1, type: "Ad Revenue", amount: "1,200", date: "Feb 1, 2024", status: "Completed" },
-  { id: 2, type: "Super Chat", amount: "450", date: "Jan 30, 2024", status: "Completed" },
-  { id: 3, type: "Channel Membership", amount: "800", date: "Jan 28, 2024", status: "Pending" },
-  { id: 4, type: "Sponsorship", amount: "2,500", date: "Jan 25, 2024", status: "Settled" },
+  { id: 1, type: "Ad Revenue", amount: "1,200", date: "Feb 07, 2026", status: "Completed" },
+  { id: 2, type: "Stream Tip", amount: "450", date: "Feb 06, 2026", status: "Completed" },
+  { id: 3, type: "Sponsorship", amount: "800", date: "Feb 06, 2026", status: "Pending" },
+  { id: 4, type: "Monthly Sub", amount: "2,500", date: "Feb 05, 2026", status: "Settled" },
 ];
 
 export default function MonetizationPage() {
   return (
-    <div className="space-y-8 pb-12 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gradient">Monetization & Wallet</h1>
-          <p className="text-muted-foreground mt-1">Manage your channel revenue, credits, and payouts.</p>
+    <div className="space-y-6 md:space-y-8 animate-fade-in relative pb-20">
+      
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 md:gap-3">
+             <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-green-600 flex items-center justify-center shadow-lg">
+                <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-white" />
+             </div>
+             <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
+                Monetization
+             </h1>
+          </div>
+          <p className="text-xs md:text-sm font-medium text-muted-foreground">Manage your earnings and payouts</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-lg h-11 px-6 gap-2 border-border/50" onClick={() => toast.success("Downloading statement...")}>
-             <Download className="h-4 w-4" /> Download Statement
+        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+          <Button 
+            variant="outline" 
+            className="h-10 md:h-12 px-6 font-bold"
+            onClick={() => toast.success("Downloading report...")}
+          >
+             <Download className="h-4 w-4 mr-2" /> 
+             Export CSV
           </Button>
-          <Button className="rounded-lg bg-primary hover:shadow-glow transition-all px-8 h-11 font-bold" onClick={() => toast.success("Payout request submitted")}>Request Payout</Button>
+          <Button 
+            className="h-10 md:h-12 px-6 bg-green-600 hover:bg-green-700 text-white font-bold shadow-lg shadow-green-500/20"
+            onClick={() => toast.success("Payout requested")}
+          >
+            Request Payout
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Wallet Control */}
-        <div className="lg:col-span-2 space-y-8">
-           {/* Total Earnings Card */}
-           <div className="glass-card p-8 rounded-xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 opacity-10 transition-opacity group-hover:opacity-20">
-                <Wallet className="h-32 w-32 text-primary" />
-              </div>
-              <div className="relative z-10">
-                <p className="text-muted-foreground font-medium uppercase tracking-wider text-xs mb-2">Available Balance</p>
-                <div className="flex items-baseline gap-2">
-                   <h2 className="text-5xl font-extrabold text-gradient">34,500</h2>
-                   <span className="text-xl font-bold text-primary">CREDITS</span>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+        {/* Primary Economic Engine */}
+        <div className="lg:col-span-8 space-y-6 md:space-y-8">
+           {/* Dynamic Wallet Architecture */}
+           <div className="bg-card p-4 md:p-8 rounded-xl md:rounded-2xl border border-border/50 shadow-sm relative overflow-hidden group">
+              <div className="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+                <div className="space-y-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Available Balance</p>
+                  <div className="flex items-baseline gap-2">
+                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-foreground tracking-tight">$34,500</h2>
+                     <span className="text-sm font-bold text-green-500">USD</span>
+                  </div>
+                  <div className="flex items-center gap-2 mt-2">
+                     <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                     <p className="text-xs font-medium text-muted-foreground">Next payout: Feb 15, 2026</p>
+                  </div>
                 </div>
-                <div className="flex gap-4 mt-8">
-                   <div className="flex-1 p-4 rounded-xl bg-muted/20 border border-border/30">
-                      <p className="text-xs text-muted-foreground mb-1">Total Lifetime Earnings</p>
-                      <p className="text-xl font-bold">850,230</p>
+                
+                <div className="grid grid-cols-1 gap-4">
+                   <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex items-center justify-between">
+                      <div>
+                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Lifetime Earnings</p>
+                          <p className="text-xl font-bold text-foreground">$850,230</p>
+                      </div>
+                      <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center">
+                          <TrendingUp className="h-5 w-5 text-green-500" />
+                      </div>
                    </div>
-                   <div className="flex-1 p-4 rounded-xl bg-muted/20 border border-border/30">
-                      <p className="text-xs text-muted-foreground mb-1">Pending Settlements</p>
-                      <p className="text-xl font-bold text-yellow-500">12,400</p>
+                   <div className="p-4 rounded-xl bg-muted/30 border border-border/50 flex items-center justify-between">
+                      <div>
+                          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1">Pending Clearance</p>
+                          <p className="text-xl font-bold text-yellow-500">$12,400</p>
+                      </div>
+                      <div className="h-10 w-10 rounded-full bg-yellow-500/10 flex items-center justify-center">
+                          <Clock className="h-5 w-5 text-yellow-500" />
+                      </div>
                    </div>
                 </div>
               </div>
            </div>
 
-           {/* Transaction History */}
-           <div className="glass-card rounded-xl overflow-hidden shadow-glow-sm">
-              <div className="p-6 border-b border-border/50 flex items-center justify-between bg-muted/10">
-                 <h3 className="text-xl font-bold flex items-center gap-3">
-                    <History className="h-5 w-5 text-primary" /> Recent Transactions
+           {/* Layout Transaction History */}
+           <div className="space-y-4 md:space-y-6">
+              <div className="flex items-center justify-between px-1">
+                 <h3 className="text-lg font-bold flex items-center gap-2">
+                    <History className="h-5 w-5 text-muted-foreground" />
+                    Transaction History
                  </h3>
-                 <Button variant="link" className="text-primary font-bold" onClick={() => toast.info("Showing all transactions")}>See all</Button>
+                 <Button variant="ghost" size="sm" className="text-xs font-bold text-primary">View All</Button>
               </div>
-              <div className="divide-y divide-border/50">
-                 {transactions.map((tx) => (
-                    <div key={tx.id} className="p-6 flex items-center justify-between hover:bg-primary/5 transition-colors group cursor-pointer" onClick={() => toast.info(`Transaction Details: ${tx.type}`)}>
+              <div className="space-y-3">
+                 {transactions.map((tx, idx) => (
+                    <div 
+                        key={tx.id} 
+                        className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card border border-border/50 rounded-xl hover:border-primary/50 transition-all cursor-pointer group"
+                        onClick={() => toast.info(`Transaction details: ${tx.id}`)}
+                    >
                        <div className="flex items-center gap-4">
-                          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                             <TrendingUp className="h-5 w-5 text-primary" />
+                          <div className={cn(
+                              "h-10 w-10 rounded-lg flex items-center justify-center shrink-0",
+                              tx.status === 'Completed' ? "bg-green-500/10 text-green-500" : 
+                              tx.status === 'Pending' ? "bg-yellow-500/10 text-yellow-500" : "bg-primary/10 text-primary"
+                          )}>
+                             <DollarSign className="h-5 w-5" />
                           </div>
                           <div>
-                             <p className="font-bold">{tx.type}</p>
-                             <p className="text-xs text-muted-foreground mt-1">{tx.date}</p>
+                             <p className="font-bold text-foreground text-sm">{tx.type}</p>
+                             <p className="text-xs text-muted-foreground font-medium">{tx.date}</p>
                           </div>
                        </div>
-                       <div className="text-right flex items-center gap-6">
-                          <div>
-                             <p className="font-bold text-gradient">+{tx.amount} CR</p>
-                             <div className="flex items-center justify-end gap-1.5 mt-1">
-                                <div className={cn(
-                                   "h-1.5 w-1.5 rounded-full",
-                                   tx.status === 'Completed' ? "bg-success" : "bg-yellow-500"
-                                )} />
-                                <span className="text-[10px] uppercase font-bold text-muted-foreground tracking-tighter">{tx.status}</span>
-                             </div>
+                       
+                       <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto mt-2 sm:mt-0 pl-14 sm:pl-0">
+                          <div className="text-right">
+                             <p className="text-lg font-bold text-foreground">+${tx.amount}</p>
+                             <Badge variant="outline" className={cn(
+                                 "text-[10px] h-5 px-2 border-0",
+                                 tx.status === 'Completed' ? "bg-green-500/10 text-green-600" :
+                                 tx.status === 'Pending' ? "bg-yellow-500/10 text-yellow-600" : "bg-blue-500/10 text-blue-600"
+                             )}>
+                                 {tx.status}
+                             </Badge>
                           </div>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                             <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                          </Button>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground hidden sm:block group-hover:translate-x-1 transition-transform" />
                        </div>
                     </div>
                  ))}
@@ -98,77 +140,69 @@ export default function MonetizationPage() {
            </div>
         </div>
 
-        {/* Right Column: Insights & Thresholds */}
-        <div className="space-y-8">
-           {/* Payout Threshold */}
-           <div className="glass-card p-6 rounded-xl border-primary/10 bg-primary/5">
-              <h3 className="font-bold mb-6 flex items-center gap-2">
-                 <HandCoins className="h-5 w-5 text-primary" /> Payout Threshold
+        {/* Intelligence Sidebar */}
+        <div className="lg:col-span-4 space-y-6 md:space-y-8">
+           {/* Payout Progress */}
+           <div className="bg-card p-6 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-6">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                 <HandCoins className="h-4 w-4 text-primary" /> Payout Threshold
               </h3>
-              <div className="space-y-4">
-                 <div className="flex justify-between items-end mb-2">
-                    <span className="text-sm font-medium">Progress</span>
-                    <span className="text-sm font-bold">69%</span>
+              <div className="space-y-2">
+                 <div className="flex justify-between items-end">
+                     <span className="text-xs font-medium text-muted-foreground">$34,500 / $50,000</span>
+                     <span className="text-sm font-bold text-foreground">69%</span>
                  </div>
-                 <Progress value={69} className="h-3 bg-muted shadow-[inset_0_1px_2px_rgba(0,0,0,0.5)]" />
-                 <p className="text-xs text-muted-foreground mt-4 leading-relaxed">
-                    You've reached <span className="text-primary font-bold">34,500</span> out of <span className="text-foreground font-bold">50,000</span> credits required for next automatic settlement.
+                 <Progress value={69} className="h-2" />
+                 <p className="text-xs text-muted-foreground pt-2">
+                    You need <span className="text-foreground font-bold">$15,500</span> more to reach the next automated payout tier.
                  </p>
-                 <Button variant="outline" className="w-full h-11 rounded-lg border-primary/20 text-primary font-bold hover:bg-primary/10 mt-2" onClick={() => toast.success("Payment method settings opened")}>
-                    Manage Payment Method
-                 </Button>
               </div>
+              <Button variant="outline" className="w-full font-bold">Manage Payout Settings</Button>
            </div>
 
-            {/* KYC Verification Status */}
-            <div className="glass-card p-6 rounded-xl border-border/50 relative overflow-hidden group">
-               <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <ShieldCheck className="h-20 w-20 text-primary" />
+            {/* KYC Status */}
+            <div className="bg-gradient-to-br from-indigo-500/5 to-purple-500/5 p-6 rounded-xl border border-indigo-500/20 shadow-sm relative overflow-hidden">
+               <div className="flex items-start justify-between mb-4">
+                  <div className="space-y-1">
+                      <h3 className="font-bold text-foreground">Identity Verification</h3>
+                      <div className="flex items-center gap-2">
+                          <Badge variant="secondary" className="bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 border-0">Action Required</Badge>
+                      </div>
+                  </div>
+                  <ShieldCheck className="h-8 w-8 text-indigo-500 opacity-50" />
                </div>
-               <h3 className="font-bold mb-3 flex items-center gap-2 relative z-10">
-                  <ShieldCheck className="h-5 w-5 text-primary" /> Verification Status
-               </h3>
-               <div className="flex items-center gap-2 mb-4 relative z-10">
-                  <div className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
-                  <span className="text-sm font-bold text-yellow-500 uppercase tracking-tighter">Verification Required</span>
-               </div>
-               <p className="text-xs text-muted-foreground mb-6 relative z-10">
-                  Verify your account to unlock lifetime payouts and higher earning potential.
+               
+               <p className="text-xs text-muted-foreground font-medium mb-4 leading-relaxed">
+                  Complete your identity verification to unlock higher withdrawal limits and instant payouts.
                </p>
-               <Button asChild className="w-full h-11 rounded-lg bg-primary hover:shadow-glow font-bold relative z-10">
-                  <Link to="/studio/kyc">Get Verified Now</Link>
-               </Button>
+               <Link to="/studio/kyc">
+                    <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-lg shadow-indigo-500/20">
+                       Complete Verification
+                    </Button>
+               </Link>
             </div>
 
-           {/* Revenue Streams */}
-           <div className="glass-card p-6 rounded-xl space-y-6">
-              <h3 className="font-bold flex items-center gap-2">
-                 <PieIcon className="h-5 w-5 text-accent" /> Revenue Streams
-              </h3>
-              <div className="space-y-6">
+           {/* Income Sources */}
+           <div className="bg-card p-6 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-6">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Income Sources</h3>
+              <div className="space-y-4">
                  {[
-                    { label: 'Advertising', value: '45%', amount: '15,525', color: 'bg-primary' },
-                    { label: 'Super Chats', value: '25%', amount: '8,625', color: 'bg-accent' },
-                    { label: 'Memberships', value: '20%', amount: '6,900', color: 'bg-secondary' },
-                    { label: 'Tips', value: '10%', amount: '3,450', color: 'bg-muted-foreground' },
+                    { label: 'Ads', value: 45, amount: '$15,525', color: 'bg-green-500' },
+                    { label: 'Subscriptions', value: 25, amount: '$8,625', color: 'bg-blue-500' },
+                    { label: 'Sponsorships', value: 20, amount: '$6,900', color: 'bg-purple-500' },
+                    { label: 'Tips', value: 10, amount: '$3,450', color: 'bg-orange-500' },
                  ].map((stream) => (
-                    <div key={stream.label} className="space-y-2 group cursor-pointer" onClick={() => toast.info(`Detailed view: ${stream.label}`)}>
-                       <div className="flex justify-between items-center text-xs">
-                          <span className="font-medium text-muted-foreground group-hover:text-primary transition-colors">{stream.label}</span>
-                          <span className="font-bold">{stream.amount} CR</span>
+                    <div key={stream.label} className="space-y-2 group cursor-pointer">
+                       <div className="flex justify-between items-center text-xs font-bold">
+                          <span className="text-muted-foreground">{stream.label}</span>
+                          <span className="text-foreground">{stream.amount}</span>
                        </div>
-                       <div className="flex items-center gap-3">
-                          <div className="flex-1 h-1.5 rounded-full bg-muted/40 overflow-hidden">
-                             <div className={cn("h-full rounded-full", stream.color)} style={{ width: stream.value }} />
-                          </div>
-                          <span className="text-[10px] font-bold min-w-[30px]">{stream.value}</span>
+                       <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
+                          <div className={cn("h-full transition-all duration-1000", stream.color)} style={{ width: `${stream.value}%` }} />
                        </div>
                     </div>
                  ))}
               </div>
-              <Button variant="ghost" className="w-full text-xs font-bold text-muted-foreground hover:text-primary transition-colors" onClick={() => toast.success("Full revenue report downloading...")}>
-                 See Detailed Revenue Report
-              </Button>
            </div>
         </div>
       </div>
@@ -176,3 +210,22 @@ export default function MonetizationPage() {
   );
 }
 
+function Clock(props: any) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </svg>
+    )
+}

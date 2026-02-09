@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { CreatorCard } from "@/components/cards/CreatorCard";
 import { StreamCard } from "@/components/cards/StreamCard";
 import { VideoCard } from "@/components/cards/VideoCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Radio, Film, Search } from "lucide-react";
+import { Users, Radio, Film, Search, Sparkles, Filter, Signal, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 // Mock data for followed creators
 const followedCreators = [
@@ -79,101 +82,157 @@ export default function FollowingPage() {
 
   return (
     <MainLayout>
-      <div className="container py-8 space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-white flex items-center gap-3">
-              <Users className="h-8 w-8 text-primary" />
-              Following
-            </h1>
-            <p className="text-muted-foreground">Content from creators you love</p>
+      <div className="min-h-screen bg-[#050508] relative overflow-hidden pb-20">
+        {/* Background Gradients */}
+        <div className="absolute top-0 right-0 w-full h-[600px] bg-gradient-to-b from-violet-600/[0.04] to-transparent -z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-full h-[600px] bg-gradient-to-t from-fuchsia-600/[0.04] to-transparent -z-10 pointer-events-none" />
+
+        <div className="container py-8 sm:py-12 px-4 sm:px-6 space-y-12">
+          
+          {/* Enhanced Header */}
+          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+            <div className="space-y-3">
+               <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                      <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <h1 className="text-4xl font-black text-white uppercase tracking-tight">Active Roster</h1>
+               </div>
+               <p className="text-sm font-medium text-white/40 italic">Monitoring established connections and live node transmissions.</p>
+            </div>
+
+            <div className="flex items-center gap-4 w-full lg:w-auto">
+               <div className="relative flex-1 lg:w-80 group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-violet-500 transition-colors" />
+                  <Input
+                    placeholder="Search connection ID..."
+                    className="h-12 pl-12 bg-white/5 border-white/10 focus:border-violet-500/50 rounded-2xl text-white placeholder:text-white/20 font-bold text-xs uppercase tracking-widest"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+               </div>
+               <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl border border-white/10 bg-white/5 text-white/60 hover:text-white">
+                  <Filter className="h-5 w-5" />
+               </Button>
+            </div>
           </div>
-          <div className="relative w-full md:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search following..."
-              className="pl-10 bg-white/5 border-white/10"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+
+          {/* Live Now Carousel/Grid - Ultra Premium */}
+          {followingLive.length > 0 && (
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-2 w-2 rounded-full bg-red-600 animate-pulse" />
+                  <h2 className="text-sm font-black uppercase tracking-[0.3em] text-white">Live Terminals</h2>
+                </div>
+                <div className="h-px flex-1 mx-8 bg-gradient-to-r from-white/10 to-transparent" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {followingLive.map(creator => (
+                  <motion.div 
+                    key={creator.id} 
+                    whileHover={{ y: -5 }}
+                    className="relative group p-6 rounded-[2rem] bg-violet-600/[0.03] border border-violet-500/10 hover:border-violet-500/30 transition-all duration-500 shadow-2xl overflow-hidden"
+                  >
+                     {/* Decorative background signal icon */}
+                     <Signal className="absolute -top-4 -right-4 h-24 w-24 text-violet-500/5 group-hover:text-violet-500/10 transition-colors" />
+                     
+                     <div className="flex items-center gap-5 relative z-10">
+                        <div className="relative shrink-0">
+                           <div className="p-1 rounded-2xl bg-gradient-to-br from-red-600 to-fuchsia-600">
+                              <img src={creator.avatar} alt={creator.name} className="h-14 w-14 rounded-[0.8rem] object-cover border-2 border-[#050508]" />
+                           </div>
+                           <div className="absolute -bottom-1 -right-1 bg-red-600 text-[8px] font-black px-1.5 py-0.5 rounded-md text-white border-2 border-[#050508] shadow-lg">LIVE</div>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                           <p className="font-black text-white uppercase tracking-tight truncate group-hover:text-violet-400 transition-colors">{creator.name}</p>
+                           <p className="text-[9px] text-white/30 uppercase font-black tracking-[0.2em] mt-1">{creator.category || 'Streaming'}</p>
+                        </div>
+                     </div>
+                     <Link to={`/watch/live/${creator.id}`} className="absolute inset-0 z-20" />
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full space-y-8">
+            <div className="flex items-center justify-between border-b border-white/5 pb-4">
+               <TabsList className="bg-white/5 p-1 rounded-2xl h-12">
+                  <TabsTrigger value="all" className="rounded-xl px-8 data-[state=active]:bg-violet-600 data-[state=active]:text-white font-black text-[10px] uppercase tracking-widest">
+                     ALL FEED
+                  </TabsTrigger>
+                  <TabsTrigger value="live" className="rounded-xl px-8 data-[state=active]:bg-violet-600 data-[state=active]:text-white font-black text-[10px] uppercase tracking-widest">
+                     LIVE ONLY
+                  </TabsTrigger>
+                  <TabsTrigger value="videos" className="rounded-xl px-8 data-[state=active]:bg-violet-600 data-[state=active]:text-white font-black text-[10px] uppercase tracking-widest">
+                     ARCHIVES
+                  </TabsTrigger>
+               </TabsList>
+            </div>
+
+            <AnimatePresence mode="wait">
+               <TabsContent value="all" className="mt-0 space-y-16 focus-visible:outline-none">
+                  <motion.section 
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="space-y-8"
+                  >
+                     <div className="flex items-center gap-3">
+                        <Users className="h-4 w-4 text-violet-400" />
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Verified Connections</h3>
+                     </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {filteredCreators.map(creator => (
+                           <CreatorCard key={creator.id} {...creator} />
+                        ))}
+                     </div>
+                  </motion.section>
+
+                  <motion.section 
+                     initial={{ opacity: 0, y: 20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     transition={{ delay: 0.1 }}
+                     className="space-y-8"
+                  >
+                     <div className="flex items-center gap-3">
+                        <Clock className="h-4 w-4 text-fuchsia-400" />
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Recent Transmissions</h3>
+                     </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {recentUploads.map(video => (
+                           <VideoCard key={video.id} {...video} />
+                        ))}
+                     </div>
+                  </motion.section>
+               </TabsContent>
+
+               <TabsContent value="live" className="mt-0 focus-visible:outline-none">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                     {followedCreators.filter(c => c.isLive).map(creator => (
+                        <CreatorCard key={creator.id} {...creator} />
+                     ))}
+                  </div>
+               </TabsContent>
+
+               <TabsContent value="videos" className="mt-0 focus-visible:outline-none">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                     {recentUploads.map(video => (
+                        <VideoCard key={video.id} {...video} />
+                     ))}
+                  </div>
+               </TabsContent>
+            </AnimatePresence>
+          </Tabs>
+
+          <div className="text-center pt-12">
+             <div className="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-white/[0.02] border border-white/5 opacity-30">
+                <Sparkles className="h-3 w-3 text-violet-400" />
+                <span className="text-[9px] font-black uppercase tracking-[0.4em]">Synced with Central Node v1.2</span>
+             </div>
           </div>
         </div>
-
-        {/* Live Now Summary (Always visible if any) */}
-        {followingLive.length > 0 && (
-          <section className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-live animate-pulse" />
-              <h2 className="text-lg font-bold">Live Now</h2>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {followingLive.map(creator => (
-                <div key={creator.id} className="glass-card p-4 rounded-2xl border-primary/20 flex items-center gap-4">
-                  <div className="relative shrink-0">
-                    <img src={creator.avatar} alt={creator.name} className="h-12 w-12 rounded-full ring-2 ring-primary" />
-                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-live text-[8px] font-black px-1.5 rounded-full text-white">LIVE</span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="font-bold truncate">{creator.name}</p>
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{creator.category}</p>
-                  </div>
-                  <Button size="sm" variant="ghost" className="ml-auto h-8 px-3 rounded-lg bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest">Watch</Button>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="bg-white/5 p-1 rounded-2xl h-12 w-full max-w-sm grid grid-cols-3">
-            <TabsTrigger value="all" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-black font-bold">All</TabsTrigger>
-            <TabsTrigger value="live" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-black font-bold">Live</TabsTrigger>
-            <TabsTrigger value="videos" className="rounded-xl data-[state=active]:bg-primary data-[state=active]:text-black font-bold">Videos</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="all" className="mt-8 space-y-12">
-             <section>
-               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                 <Users className="h-5 w-5 text-primary" />
-                 Your Creators
-               </h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                 {filteredCreators.map(creator => (
-                   <CreatorCard key={creator.id} {...creator} />
-                 ))}
-               </div>
-             </section>
-
-             <section>
-               <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                 <Film className="h-5 w-5 text-primary" />
-                 Recent Uploads
-               </h3>
-               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {recentUploads.map(video => (
-                   <VideoCard key={video.id} {...video} />
-                 ))}
-               </div>
-             </section>
-          </TabsContent>
-
-          <TabsContent value="live" className="mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {followedCreators.filter(c => c.isLive).map(creator => (
-                <CreatorCard key={creator.id} {...creator} />
-              ))}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="videos" className="mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recentUploads.map(video => (
-                <VideoCard key={video.id} {...video} />
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
       </div>
     </MainLayout>
   );

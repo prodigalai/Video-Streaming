@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Radio, User, Compass, Users } from "lucide-react";
+import { Home, Radio, User, Compass, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
   { icon: Compass, label: "Explore", path: "/explore" },
   { icon: Radio, label: "Live", path: "/live" },
-  { icon: Users, label: "Following", path: "/following" },
+  { icon: MessageSquare, label: "Messages", path: "/messages" },
   { icon: User, label: "Profile", path: "/profile" },
 ];
 

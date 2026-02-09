@@ -18,10 +18,10 @@ export function Footer() {
           <div className="col-span-2 lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2 group min-h-[44px] items-center touch-manipulation w-fit">
               <div className="h-8 w-8 rounded-lg overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300 shrink-0">
-                <img src="/logo.png" alt="StreamVault" className="h-full w-full object-cover" />
+                <img src="/logo.png" alt="Fans on Chain Limited" className="h-full w-full object-cover" />
               </div>
               <span className="text-lg sm:text-xl font-black text-gradient tracking-tight">
-                StreamVault
+                Fans on Chain Limited
               </span>
             </Link>
             <p className="text-muted-foreground text-xs sm:text-sm max-w-xs leading-relaxed">
@@ -47,7 +47,9 @@ export function Footer() {
               <li><Link to="/legal/privacy" className="block py-2 sm:py-0 hover:text-primary transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">Privacy Policy</Link></li>
               <li><Link to="/legal/cookies" className="block py-2 sm:py-0 hover:text-primary transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">Cookie Policy</Link></li>
               <li><Link to="/legal/dmca" className="block py-2 sm:py-0 hover:text-primary transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">DMCA</Link></li>
+              <li><Link to="/legal/record-keeping" className="block py-2 sm:py-0 hover:text-primary transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">2257 Compliance</Link></li>
               <li><Link to="/legal/compliance" className="block py-2 sm:py-0 hover:text-primary transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation">Compliance</Link></li>
+              <li><Link to="/legal/p2b" className="block py-2 sm:py-0 hover:text-primary transition-colors min-h-[44px] sm:min-h-0 flex items-center touch-manipulation uppercase text-[10px] font-bold tracking-widest opacity-80">P2B Regulation</Link></li>
             </ul>
           </div>
 
@@ -64,7 +66,7 @@ export function Footer() {
 
         <div className="border-t border-white/5 pt-6 sm:pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p className="text-xs text-muted-foreground font-medium">
-            © {currentYear} StreamVault. All rights reserved.
+            © {currentYear} Fans on Chain Limited. All rights reserved.
           </p>
           <div className="flex gap-6 text-xs text-muted-foreground font-medium">
              <span>v1.2.0 (Beta)</span>

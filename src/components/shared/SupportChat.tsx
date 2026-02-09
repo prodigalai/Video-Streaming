@@ -29,7 +29,7 @@ export function SupportChat() {
   const [activeTab, setActiveTab] = useState<'home' | 'messages'>('home');
   const [messageInput, setMessageInput] = useState("");
   const [messages, setMessages] = useState<SupportMessage[]>([
-    { id: 1, type: 'bot', text: "Hello! I'm your StreamVault AI assistant. How can I help you today?", time: "2:00 PM" }
+    { id: 1, type: 'bot', text: "Hello! I'm your Fans on Chain Limited AI assistant. How can I help you today?", time: "2:00 PM" }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -176,7 +176,7 @@ export function SupportChat() {
                       <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center border border-primary/20">
                          <HelpCircle className="h-5 w-5 text-primary" />
                       </div>
-                      <span className="text-sm font-bold text-zinc-300 group-hover:text-white transition-colors">StreamVault Creators Hub</span>
+                      <span className="text-sm font-bold text-zinc-300 group-hover:text-white transition-colors">Fans on Chain Limited Creators Hub</span>
                    </div>
                    <ExternalLink className="h-4 w-4 text-zinc-700 group-hover:text-primary transition-colors" />
                 </div>

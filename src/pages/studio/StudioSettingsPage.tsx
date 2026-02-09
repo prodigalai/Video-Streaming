@@ -1,233 +1,295 @@
-import { useState } from "react";
-import { User, Shield, Bell, CreditCard, Radio, Globe, Camera, Save, Settings as SettingsIcon, Link as LinkIcon, Lock } from "lucide-react";
+import { User, Mail, Camera, Save, Globe, Twitter, Instagram, Youtube, Link as LinkIcon, Lock, Moon, Bell, Shield, LogOut, MessageSquare, Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
+import { useLocation } from "react-router-dom";
+
 export default function StudioSettingsPage() {
-  const [activeTab, setActiveTab] = useState("channel");
+  const location = useLocation();
+  const defaultTab = location.pathname.includes("settings") ? "account" : "profile";
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gradient">Channel Settings</h1>
-          <p className="text-muted-foreground mt-1">Customize your channel profile, branding, and preferences.</p>
+    <div className="space-y-6 md:space-y-8 animate-fade-in relative pb-20">
+      
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 md:gap-3">
+             <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-primary flex items-center justify-center shadow-lg">
+                <User className="h-4 w-4 md:h-5 md:w-5 text-primary-foreground" />
+             </div>
+             <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
+                {defaultTab === 'account' ? 'Channel Settings' : 'Channel Profile'}
+             </h1>
+          </div>
+          <p className="text-xs md:text-sm font-medium text-muted-foreground">Manage your channel {defaultTab === 'account' ? 'preferences and security' : 'branding and information'}</p>
         </div>
-        <Button className="rounded-lg bg-primary hover:shadow-glow transition-all px-8 h-11 font-bold gap-2" onClick={() => toast.success("All changes saved successfully!")}>
-           <Save className="h-4 w-4" /> Save All Changes
+        <Button className="h-10 md:h-12 px-8 bg-primary text-primary-foreground hover:bg-primary/90 font-bold shadow-lg w-full sm:w-auto">
+            <Save className="h-4 w-4 mr-2" /> Save Changes
         </Button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-         {/* Settings Navigation */}
-         <div className="w-full lg:w-72 flex-shrink-0 space-y-1">
-            {[
-               { id: 'channel', label: 'Channel Info', icon: User },
-               { id: 'branding', label: 'Branding', icon: Camera },
-               { id: 'notifications', label: 'Notifications', icon: Bell },
-               { id: 'privacy', label: 'Privacy & Security', icon: Shield },
-               { id: 'verification', label: 'Verification (KYC)', icon: ShieldCheck },
-               { id: 'payouts', label: 'Payments & Tax', icon: CreditCard },
-               { id: 'stream', label: 'Stream Preferences', icon: Radio },
-            ].map((tab) => (
-               <button
-                  key={tab.id}
-                  onClick={() => { setActiveTab(tab.id); toast.info(`Switched to ${tab.label} settings`); }}
-                  className={cn(
-                     "w-full flex items-center gap-3 px-4 py-3.5 rounded-xl transition-all duration-300 text-sm font-semibold",
-                     activeTab === tab.id 
-                        ? "bg-primary/10 text-primary shadow-[0_0_20px_rgba(168,85,247,0.1)] border border-primary/20" 
-                        : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                  )}
-               >
-                  <tab.icon className={cn("h-4 w-4", activeTab === tab.id ? "text-primary" : "text-muted-foreground")} />
-                  {tab.label}
-               </button>
-            ))}
-         </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+        {/* Main Settings Area */}
+        <div className="lg:col-span-8 space-y-6 md:space-y-8">
+           <Tabs defaultValue={defaultTab} className="w-full">
+              <TabsList className="w-full justify-start overflow-x-auto scrollbar-hide bg-transparent p-0 border-b border-border/50 mb-6 md:mb-8">
+                 <TabsTrigger value="profile" className="data-[state=active]:bg-transparent data-[state=active]:border-primary data-[state=active]:shadow-none border-b-2 border-transparent rounded-none px-4 md:px-6 py-2 md:py-3 font-bold text-muted-foreground data-[state=active]:text-foreground transition-all">Profile</TabsTrigger>
+                 <TabsTrigger value="account" className="data-[state=active]:bg-transparent data-[state=active]:border-primary data-[state=active]:shadow-none border-b-2 border-transparent rounded-none px-4 md:px-6 py-2 md:py-3 font-bold text-muted-foreground data-[state=active]:text-foreground transition-all">Account</TabsTrigger>
+                 <TabsTrigger value="notifications" className="data-[state=active]:bg-transparent data-[state=active]:border-primary data-[state=active]:shadow-none border-b-2 border-transparent rounded-none px-4 md:px-6 py-2 md:py-3 font-bold text-muted-foreground data-[state=active]:text-foreground transition-all">Notifications</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="profile" className="space-y-6 md:space-y-8 mt-0 focus-visible:ring-0">
+                 {/* Branding */}
+                 <div className="space-y-4 md:space-y-6 bg-card p-4 md:p-8 rounded-xl border border-border/50 shadow-sm relative overflow-hidden">
+                    <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+                       <div className="relative group cursor-pointer">
+                          <Avatar className="h-24 w-24 md:h-32 md:w-32 border-4 border-background shadow-xl">
+                             <AvatarImage src="https://github.com/shadcn.png" />
+                             <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                             <Camera className="h-8 w-8 text-white" />
+                          </div>
+                       </div>
+                       <div className="flex-1 space-y-4 w-full text-center md:text-left">
+                          <div className="space-y-1">
+                             <h3 className="text-lg font-bold text-foreground">Profile Picture</h3>
+                             <p className="text-xs text-muted-foreground">Recommended 800x800 px. JPG or PNG.</p>
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-3">
+                             <Button variant="outline" size="sm" className="font-bold">Upload New</Button>
+                             <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10 font-bold">Remove</Button>
+                          </div>
+                       </div>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div className="space-y-4">
+                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                          <div className="space-y-2">
+                             <Label htmlFor="channelName">Channel Name</Label>
+                             <Input id="channelName" defaultValue="Creative Studio" className="bg-muted/30 border-border/50" />
+                          </div>
+                          <div className="space-y-2">
+                             <Label htmlFor="handle">Handle</Label>
+                             <div className="relative">
+                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">@</span>
+                                <Input id="handle" defaultValue="creative_studio" className="pl-8 bg-muted/30 border-border/50" />
+                             </div>
+                          </div>
+                       </div>
+                       
+                       <div className="space-y-2">
+                          <Label htmlFor="bio">Channel Bio</Label>
+                          <Textarea id="bio" placeholder="Tell viewers about your channel..." className="bg-muted/30 border-border/50 min-h-[120px]" />
+                          <p className="text-xs text-muted-foreground text-right">0 / 500</p>
+                       </div>
+                    </div>
+                 </div>
 
-         {/* Settings Content Area */}
-         <div className="flex-1 glass-card p-8 rounded-2xl shadow-glow-sm border-primary/5">
-             {activeTab === 'channel' && (
-                <div className="space-y-8 animate-fade-in">
-                   <div className="flex items-center gap-6 pb-8 border-b border-border/50">
-                      <div className="relative group cursor-pointer" onClick={() => toast.info("Avatar upload dialog opened")}>
-                         <Avatar className="h-24 w-24 border-2 border-primary/20 group-hover:border-primary transition-all duration-500">
-                            <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=creator" />
-                            <AvatarFallback>C</AvatarFallback>
-                         </Avatar>
-                         <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Camera className="h-6 w-6 text-white" />
-                         </div>
-                      </div>
-                      <div className="space-y-2">
-                         <h3 className="text-xl font-bold">Channel Avatar</h3>
-                         <p className="text-sm text-muted-foreground">Recommend 800x800px. PNG or JPG only.</p>
-                         <div className="flex gap-2">
-                            <Button size="sm" variant="outline" className="h-9 rounded-lg px-4 border-border/50" onClick={() => toast.info("Change Avatar")}>Change</Button>
-                            <Button size="sm" variant="ghost" className="h-9 rounded-lg px-4 text-destructive hover:bg-destructive/10" onClick={() => toast.error("Avatar removed")}>Remove</Button>
-                         </div>
-                      </div>
-                   </div>
+                 {/* Social Links */}
+                 <div className="space-y-4 md:space-y-6 bg-card p-4 md:p-8 rounded-xl border border-border/50 shadow-sm">
+                    <h3 className="text-lg font-bold text-foreground">Social Links</h3>
+                    <div className="space-y-4">
+                       {[
+                          { icon: Globe, label: "Website", placeholder: "https://your-site.com" },
+                          { icon: Twitter, label: "Twitter", placeholder: "https://twitter.com/..." },
+                          { icon: Instagram, label: "Instagram", placeholder: "https://instagram.com/..." },
+                          { icon: Youtube, label: "YouTube", placeholder: "https://youtube.com/..." },
+                       ].map((link, i) => (
+                          <div key={i} className="flex items-center gap-3">
+                             <div className="h-10 w-10 rounded-lg bg-muted/30 flex items-center justify-center shrink-0">
+                                <link.icon className="h-5 w-5 text-muted-foreground" />
+                             </div>
+                             <Input placeholder={link.placeholder} className="flex-1 bg-muted/30 border-border/50" />
+                          </div>
+                       ))}
+                       <Button variant="outline" className="w-full font-bold border-dashed border-2">
+                          <LinkIcon className="h-4 w-4 mr-2" /> Add Link
+                       </Button>
+                    </div>
+                 </div>
+              </TabsContent>
 
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div className="space-y-3">
-                         <label className="text-sm font-bold text-muted-foreground flex items-center gap-2">
-                            Channel Name <Badge variant="outline" className="h-4 text-[9px] uppercase font-black tracking-tighter">Required</Badge>
-                         </label>
-                         <Input defaultValue="Creator Studio" className="h-12 bg-muted/20 border-border/50 rounded-xl focus:border-primary/50" />
-                      </div>
-                      <div className="space-y-3">
-                         <label className="text-sm font-bold text-muted-foreground">Handle</label>
-                         <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-bold">@</span>
-                            <Input defaultValue="creator_pro" className="h-12 pl-10 bg-muted/20 border-border/50 rounded-xl focus:border-primary/50" />
-                         </div>
-                      </div>
-                      <div className="md:col-span-2 space-y-3">
-                         <label className="text-sm font-bold text-muted-foreground">About / Description</label>
-                         <Textarea 
-                            placeholder="Tell your audience about your channel..." 
-                            className="min-h-[120px] bg-muted/20 border-border/50 rounded-xl focus:border-primary/50 resize-none p-4"
-                            defaultValue="Welcome to my official StreamVault channel! Here I post daily content about design, development, and high-performance coding. Don't forget to subscribe!"
-                         />
-                      </div>
-                   </div>
+              <TabsContent value="account" className="space-y-6 md:space-y-8 mt-0 focus-visible:ring-0">
+                 {/* Security Settings */}
+                 <div className="space-y-4 md:space-y-6 bg-card p-4 md:p-8 rounded-xl border border-border/50 shadow-sm">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Shield className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-foreground">Security</h3>
+                            <p className="text-xs text-muted-foreground">Manage your password and security settings</p>
+                        </div>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email Address</Label>
+                            <Input id="email" defaultValue="ash@example.com" readOnly className="bg-muted/30 border-border/50" />
+                        </div>
+                        <div className="space-y-2">
+                             <Label>Two-Factor Authentication</Label>
+                             <div className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-background/50">
+                                <span className="text-sm font-medium text-muted-foreground">Enable 2FA</span>
+                                <Switch />
+                             </div>
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-4 pt-4">
+                        <p className="text-sm font-bold">Change Password</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <Input type="password" placeholder="Current Password" className="bg-muted/30 border-border/50" />
+                            <Input type="password" placeholder="New Password" className="bg-muted/30 border-border/50" />
+                            <Input type="password" placeholder="Confirm Password" className="bg-muted/30 border-border/50" />
+                        </div>
+                        <Button variant="outline" className="font-bold">Update Password</Button>
+                    </div>
+                 </div>
 
-                   <div className="pt-4 space-y-6">
-                      <h3 className="font-bold flex items-center gap-2">
-                         <LinkIcon className="h-4 w-4 text-primary" /> Social Links
-                      </h3>
-                      <div className="space-y-4">
-                         {['Twitter', 'Instagram', 'Personal Website'].map((link) => (
-                            <div key={link} className="flex gap-4">
-                               <div className="w-40 flex-shrink-0 flex items-center px-4 bg-muted/30 rounded-lg border border-border/50 text-xs font-bold text-muted-foreground">{link}</div>
-                               <Input placeholder={`https://${link.toLowerCase()}.com/you`} className="h-11 bg-muted/20 border-border/50 rounded-lg flex-1" />
+                 {/* Connected Accounts */}
+                 <div className="bg-card p-4 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-6">
+                    <h3 className="text-lg font-bold text-foreground">Connected Accounts</h3>
+                    <div className="space-y-4">
+                        {[
+                            { name: "Google", connected: true, icon: Globe },
+                            { name: "Discord", connected: false, icon: MessageSquare },
+                            { name: "Twitch", connected: false, icon:  Video },
+                        ].map((account, i) => (
+                            <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-border/50 bg-background/50">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center">
+                                        <account.icon className="h-5 w-5 text-foreground" />
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-sm text-foreground">{account.name}</p>
+                                        <p className="text-xs text-muted-foreground">{account.connected ? "Connected" : "Not connected"}</p>
+                                    </div>
+                                </div>
+                                <Button variant={account.connected ? "outline" : "default"} size="sm" className="font-bold">
+                                    {account.connected ? "Disconnect" : "Connect"}
+                                </Button>
                             </div>
-                         ))}
-                      </div>
-                   </div>
-                </div>
-             )}
+                        ))}
+                    </div>
+                 </div>
+              </TabsContent>
 
-             {activeTab === 'stream' && (
-                <div className="space-y-8 animate-fade-in">
-                   <div className="space-y-6">
-                      <h3 className="text-xl font-bold flex items-center gap-2">
-                         <Radio className="h-5 w-5 text-primary" /> Stream Default Preferences
-                      </h3>
-                      <div className="space-y-6">
-                         <div className="flex items-center justify-between p-4 rounded-xl bg-muted/10 border border-border/50">
-                            <div>
-                               <p className="font-bold text-sm">Ultra Low Latency</p>
-                               <p className="text-xs text-muted-foreground mt-1">Optimized for real-time interaction (Best for Q&A)</p>
+              <TabsContent value="notifications" className="space-y-6 md:space-y-8 mt-0 focus-visible:ring-0">
+                 {/* Email Notifications */}
+                 <div className="bg-card p-4 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-6">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Mail className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-foreground">Email Notifications</h3>
+                            <p className="text-xs text-muted-foreground">Manage what you receive via email</p>
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        {[
+                            { label: "New Subscriber Alerts", desc: "Get notified when someone subscribes", default: true },
+                            { label: "Comment Notifications", desc: "When someone comments on your video", default: true },
+                            { label: "Weekly Performance Digest", desc: "Summary of your channel's performance", default: true },
+                            { label: "Product Updates", desc: "News about new features and updates", default: false },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-start justify-between">
+                                <div className="space-y-0.5">
+                                    <Label className="text-sm font-bold">{item.label}</Label>
+                                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                                </div>
+                                <Switch defaultChecked={item.default} />
                             </div>
-                            <Switch defaultChecked onCheckedChange={(c) => toast.info(`Latency mode: ${c ? 'Ultra Low' : 'Standard'}`)} />
-                         </div>
-                         <div className="flex items-center justify-between p-4 rounded-xl bg-muted/10 border border-border/50">
-                            <div>
-                               <p className="font-bold text-sm">Auto-Archive Streams</p>
-                               <p className="text-xs text-muted-foreground mt-1">Automatically save live streams as VODs after ending</p>
-                            </div>
-                            <Switch defaultChecked onCheckedChange={(c) => toast.info(`Auto-archive: ${c ? 'Enabled' : 'Disabled'}`)} />
-                         </div>
-                         <div className="flex items-center justify-between p-4 rounded-xl bg-muted/10 border border-border/50">
-                            <div>
-                               <p className="font-bold text-sm">Enable DVR</p>
-                               <p className="text-xs text-muted-foreground mt-1">Allow viewers to pause and seek back in live streams</p>
-                            </div>
-                            <Switch defaultChecked onCheckedChange={(c) => toast.info(`DVR: ${c ? 'Enabled' : 'Disabled'}`)} />
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             )}
+                        ))}
+                    </div>
+                 </div>
 
-             {activeTab === 'privacy' && (
-                <div className="space-y-8 animate-fade-in">
-                   <h3 className="text-xl font-bold flex items-center gap-2">
-                      <Shield className="h-5 w-5 text-primary" /> Privacy & Access
-                   </h3>
-                   <div className="grid grid-cols-1 gap-6">
-                      <div className="p-6 rounded-xl border border-border/50 bg-muted/10 flex items-center justify-between">
-                         <div className="flex items-center gap-4">
-                            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
-                               <Lock className="h-6 w-6 text-primary" />
+                 {/* Push Notifications */}
+                 <div className="bg-card p-4 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-6">
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Bell className="h-5 w-5 text-primary" />
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold text-foreground">Push Notifications</h3>
+                            <p className="text-xs text-muted-foreground">Manage mobile and browser alerts</p>
+                        </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        {[
+                            { label: "Live Stream Alerts", desc: "Notify when accounts you follow go live", default: true },
+                            { label: "Direct Messages", desc: "When you receive a new message", default: true },
+                            { label: "Mentions", desc: "When someone mentions you", default: true },
+                        ].map((item, i) => (
+                            <div key={i} className="flex items-start justify-between">
+                                <div className="space-y-0.5">
+                                    <Label className="text-sm font-bold">{item.label}</Label>
+                                    <p className="text-xs text-muted-foreground">{item.desc}</p>
+                                </div>
+                                <Switch defaultChecked={item.default} />
                             </div>
-                            <div>
-                               <p className="font-bold">Two-Factor Authentication</p>
-                               <p className="text-xs text-muted-foreground mt-1">Keep your creator account secure with 2FA.</p>
-                            </div>
-                         </div>
-                         <Button variant="outline" className="rounded-lg h-10 border-primary/20 text-primary font-bold" onClick={() => toast.success("2FA setup initiated")}>Enable Now</Button>
-                      </div>
-                   </div>
-                </div>
-             )}
+                        ))}
+                    </div>
+                 </div>
+              </TabsContent>
+           </Tabs>
+        </div>
 
-             {activeTab === 'verification' && (
-                <div className="space-y-8 animate-fade-in">
-                   <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-bold flex items-center gap-2">
-                         <ShieldCheck className="h-5 w-5 text-primary" /> KYC & Age Verification
-                      </h3>
-                      <Badge variant="outline" className="text-yellow-500 border-yellow-500/50 bg-yellow-500/10 font-bold px-3 py-1">Action Required</Badge>
-                   </div>
-                   
-                   <div className="grid gap-6">
-                      <div className="p-6 rounded-2xl border border-border/50 bg-muted/5 space-y-4">
-                         <div className="flex items-start gap-4">
-                            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                               <User className="h-5 w-5 text-primary" />
-                            </div>
-                            <div className="space-y-1">
-                               <p className="font-bold">Age Verification</p>
-                               <p className="text-sm text-muted-foreground">Confirm your date of birth to comply with regional regulations.</p>
-                               <div className="pt-4 flex items-end gap-4">
-                                  <div className="flex-1 space-y-2">
-                                     <Label className="text-[10px] uppercase font-bold text-muted-foreground">Date of Birth</Label>
-                                     <Input type="date" className="bg-muted/20 border-border/50 h-10" />
-                                  </div>
-                                  <Button size="sm" className="h-10 px-4" onClick={() => toast.success("DOB saved")}>Save Age</Button>
-                               </div>
-                            </div>
-                         </div>
-                      </div>
+        {/* Sidebar Settings */}
+        <div className="lg:col-span-4 space-y-6 md:space-y-8">
+           {/* Privacy */}
+           <div className="bg-card p-6 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-6">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                 <Lock className="h-4 w-4" /> Privacy & Safety
+              </h3>
+              <div className="space-y-4">
+                 {[
+                    { label: "Private Channel", desc: "Only subscribers can see content" },
+                    { label: "Hide Subscriber Count", desc: "Don't show on profile" },
+                    { label: "Allow Comments", desc: "Enable comments on videos" },
+                 ].map((item, i) => (
+                    <div key={i} className="flex items-center justify-between">
+                       <div className="space-y-0.5">
+                          <Label className="text-sm font-bold">{item.label}</Label>
+                          <p className="text-xs text-muted-foreground pr-2">{item.desc}</p>
+                       </div>
+                       <Switch />
+                    </div>
+                 ))}
+              </div>
+           </div>
 
-                      <div className="p-6 rounded-2xl border border-primary/20 bg-primary/5 space-y-6">
-                         <div className="flex items-center gap-4">
-                            <div className="h-10 w-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                               <ShieldCheck className="h-5 w-5 text-primary" />
-                            </div>
-                            <div>
-                               <p className="font-bold">Identity Verification (KYC)</p>
-                               <p className="text-sm text-muted-foreground">Required for all creators earning over $50/month.</p>
-                            </div>
-                         </div>
-                         <div className="space-y-3">
-                            <div className="flex justify-between text-xs font-bold uppercase tracking-tighter">
-                               <span>Identity Progress</span>
-                               <span className="text-primary">Not Started</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-muted/50 rounded-full overflow-hidden">
-                               <div className="h-full bg-primary/30 w-0" />
-                            </div>
-                         </div>
-                         <Button asChild className="w-full h-11 glow-primary font-bold">
-                            <Link to="/studio/kyc">Begin KYC Verification Process</Link>
-                         </Button>
-                      </div>
-                   </div>
-                </div>
-             )}
-          </div>
-       </div>
+           {/* Danger Zone */}
+           <div className="bg-red-500/5 p-6 md:p-8 rounded-xl border border-red-500/20 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-red-500 uppercase tracking-wider flex items-center gap-2">
+                 <Shield className="h-4 w-4" /> Danger Zone
+              </h3>
+              <p className="text-xs text-red-400/80 font-medium">
+                 Irreversible actions for your channel. Proceed with caution.
+              </p>
+              <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-red-500/10 font-bold">
+                 <LogOut className="h-4 w-4 mr-2" /> Delete Channel
+              </Button>
+           </div>
+        </div>
+      </div>
     </div>
   );
 }

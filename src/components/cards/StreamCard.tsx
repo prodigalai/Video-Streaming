@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { Eye } from "lucide-react";
+import { Eye, Users, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 interface StreamCardProps {
   id: string;
@@ -28,62 +29,80 @@ export function StreamCard({
   className,
 }: StreamCardProps) {
   return (
-    <Link
-      to={`/watch/live/${id}`}
-      className={cn("group block", className)}
+    <motion.div
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
+      className={cn("group relative", className)}
     >
-      {/* Thumbnail Container */}
-      <div className="relative aspect-video rounded-xl overflow-hidden bg-muted group-hover:shadow-[0_0_30px_rgba(165,128,202,0.15)] transition-all duration-300">
-        <img
-          src={thumbnail}
-          alt={title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
-        
-        {/* Status Overlays */}
-        <div className="absolute top-2 left-2 flex gap-1.5">
-          {isLive && (
-             <span className="px-2 py-0.5 rounded-md bg-live text-white text-[10px] font-black uppercase tracking-widest shadow-lg">
-                LIVE
-             </span>
-          )}
-          <div className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white text-[10px] font-bold shadow-lg">
-             {viewers >= 1000 ? `${(viewers / 1000).toFixed(1)}K` : viewers} viewers
-          </div>
-        </div>
-
-        {/* Hover Action Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-95 group-hover:scale-100">
-           <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center shadow-glow">
-              <svg className="h-6 w-6 text-primary-foreground ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-           </div>
-        </div>
-      </div>
-
-      {/* Info section */}
-      <div className="flex gap-3 mt-3">
-        <div className="flex-shrink-0">
+      <Link
+        to={`/watch/live/${id}`}
+        className="block"
+      >
+        {/* Thumbnail Container */}
+        <div className="relative aspect-video rounded-[1.5rem] overflow-hidden bg-[#0a0a0f] border border-white/5 transition-all duration-500 group-hover:border-violet-500/30 group-hover:shadow-[0_0_40px_rgba(139,92,246,0.15)]">
           <img
-            src={creator.avatar}
-            alt={creator.name}
-            className="h-9 w-9 rounded-full border border-border group-hover:border-primary/50 transition-colors"
+            src={thumbnail}
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80 group-hover:opacity-100"
           />
-        </div>
-        <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-          <h3 className="font-bold text-sm text-foreground truncate group-hover:text-primary transition-colors leading-tight">
-            {title}
-          </h3>
-          <div className="flex flex-col">
-            <p className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">{creator.name}</p>
-            <p className="text-[11px] text-muted-foreground/60">{category}</p>
+          
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#050508] via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+          
+          {/* Status Overlays */}
+          <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {isLive && (
+               <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-600/90 backdrop-blur-md shadow-xl">
+                  <div className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                  <span className="text-white text-[9px] font-black uppercase tracking-[0.2em]">
+                     LIVE
+                  </span>
+               </div>
+            )}
+            <div className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-xl border border-white/5 flex items-center gap-1.5">
+               <Users className="h-3 w-3 text-violet-400" />
+               {viewers >= 1000 ? `${(viewers / 1000).toFixed(1)}K` : viewers}
+            </div>
+          </div>
+
+          {/* Hover Play Button */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 scale-90 group-hover:scale-100">
+             <div className="h-14 w-14 rounded-2xl bg-violet-600/90 backdrop-blur-md flex items-center justify-center shadow-2xl shadow-violet-500/50 border border-white/20">
+                <svg className="h-6 w-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+             </div>
           </div>
         </div>
-      </div>
-    </Link>
+
+        {/* Info section */}
+        <div className="flex gap-4 mt-4 px-1">
+          <div className="shrink-0">
+             <div className="relative">
+                <img
+                  src={creator.avatar}
+                  alt={creator.name}
+                  className="h-10 w-10 rounded-xl object-cover border border-white/10 group-hover:border-violet-500/50 transition-all shadow-xl"
+                />
+                <div className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-violet-600 flex items-center justify-center border-2 border-[#050508]">
+                    <ShieldCheck className="h-2 w-2 text-white" />
+                </div>
+             </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-black text-[13px] text-white uppercase tracking-wider truncate group-hover:text-violet-400 transition-colors leading-tight mb-1">
+              {title}
+            </h3>
+            <div className="flex items-center gap-2">
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest truncate hover:text-white transition-colors">
+                {creator.name}
+              </p>
+              <span className="h-1 w-1 rounded-full bg-white/10" />
+              <p className="text-[10px] font-black text-violet-500/60 uppercase tracking-[0.2em]">{category}</p>
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
   );
 }

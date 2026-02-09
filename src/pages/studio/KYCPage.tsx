@@ -1,249 +1,156 @@
-import { useState } from "react";
-import { 
-  ShieldCheck, 
-  Upload, 
-  User, 
-  FileText, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle,
-  ArrowRight,
-  Camera
-} from "lucide-react";
+import { ShieldCheck, Check, Upload, FileText, AlertCircle, ScanLine, UserCheck, Shield, ChevronRight, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
-type KYCStep = 'start' | 'identity' | 'document' | 'selfie' | 'pending';
+const steps = [
+  { id: 1, title: "Identity", status: "completed" },
+  { id: 2, title: "Documents", status: "current" },
+  { id: 3, title: "Review", status: "pending" },
+];
 
 export default function KYCPage() {
-  const [currentStep, setCurrentStep] = useState<KYCStep>('start');
-  const [uploadProgress, setUploadProgress] = useState(0);
-
-  const handleNext = (next: KYCStep) => {
-    setCurrentStep(next);
-    window.scrollTo(0, 0);
-  };
-
-  const simulateUpload = (next: KYCStep) => {
-    setUploadProgress(0);
-    const interval = setInterval(() => {
-      setUploadProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          handleNext(next);
-          return 100;
-        }
-        return prev + 10;
-      });
-    }, 200);
-  };
-
   return (
-    <div className="max-w-4xl mx-auto py-8 px-4">
+    <div className="space-y-6 md:space-y-8 animate-fade-in relative pb-20">
+      
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-black text-white flex items-center gap-3">
-             <ShieldCheck className="h-8 w-8 text-primary shadow-glow-sm" />
-             Creator Verification (KYC)
-          </h1>
-          <p className="text-muted-foreground mt-2">Verify your identity to unlock payouts and premium features.</p>
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 md:gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 md:gap-3">
+             <div className="h-8 w-8 md:h-10 md:w-10 rounded-xl bg-cyan-600 flex items-center justify-center shadow-lg">
+                <ShieldCheck className="h-4 w-4 md:h-5 md:w-5 text-white" />
+             </div>
+             <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-foreground tracking-tight">
+                Identity Verification
+             </h1>
+          </div>
+          <p className="text-xs md:text-sm font-medium text-muted-foreground">Complete KYC to unlock full platform features</p>
         </div>
-        {currentStep !== 'start' && currentStep !== 'pending' && (
-           <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Progress</span>
-              <div className="w-32 h-2 bg-white/5 rounded-full overflow-hidden">
-                 <div 
-                    className="h-full bg-primary transition-all duration-500" 
-                    style={{ width: currentStep === 'identity' ? '33%' : currentStep === 'document' ? '66%' : '100%' }} 
-                 />
-              </div>
-           </div>
-        )}
+        
+        <div className="flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/20 px-3 py-1.5 rounded-lg w-fit">
+           <AlertCircle className="h-4 w-4 text-yellow-500" />
+           <span className="text-xs font-bold text-yellow-500 uppercase tracking-wider">Verification Pending</span>
+        </div>
       </div>
 
-      {currentStep === 'start' && (
-        <div className="grid md:grid-cols-2 gap-8 animate-fade-in">
-           <Card className="bg-[#0f0f13] border-border/50 p-8 flex flex-col items-center text-center space-y-6">
-              <div className="h-20 w-20 rounded-2xl bg-primary/10 flex items-center justify-center">
-                 <User className="h-10 w-10 text-primary" />
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+        {/* Main Form Area */}
+        <div className="lg:col-span-8 space-y-6 md:space-y-8">
+           {/* Steps Progress */}
+           <div className="relative">
+              <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-muted/50 -z-10" />
+              <div className="flex justify-between max-w-lg mx-auto md:mx-0">
+                 {steps.map((step, i) => (
+                    <div key={step.id} className="flex flex-col items-center gap-2 bg-background px-2 relative z-10 first:pl-0 last:pr-0">
+                       <div className={cn(
+                          "h-8 w-8 md:h-10 md:w-10 rounded-full flex items-center justify-center border-2 transition-all font-bold text-xs md:text-sm shadow-sm",
+                          step.status === 'completed' ? "bg-cyan-600 border-cyan-600 text-white" :
+                          step.status === 'current' ? "bg-background border-cyan-600 text-cyan-600 ring-4 ring-cyan-500/10" : "bg-muted border-muted-foreground/20 text-muted-foreground"
+                       )}>
+                          {step.status === 'completed' ? <Check className="h-4 w-4 md:h-5 md:w-5" /> : step.id}
+                       </div>
+                       <span className={cn(
+                          "text-[10px] md:text-xs font-bold uppercase tracking-wider",
+                          step.status === 'current' ? "text-cyan-600" : "text-muted-foreground"
+                       )}>{step.title}</span>
+                    </div>
+                 ))}
               </div>
-              <div>
-                 <h3 className="text-xl font-bold mb-2">Individual Creator</h3>
-                 <p className="text-sm text-muted-foreground">For single creators, influencers, and artists.</p>
-              </div>
-              <ul className="text-left w-full space-y-3 text-sm">
-                 <li className="flex items-center gap-3 text-muted-foreground">
-                    <CheckCircle2 className="h-4 w-4 text-primary" /> Government ID Required
-                 </li>
-                 <li className="flex items-center gap-3 text-muted-foreground">
-                    <CheckCircle2 className="h-4 w-4 text-primary" /> Facial Verification
-                 </li>
-                 <li className="flex items-center gap-3 text-muted-foreground">
-                    <CheckCircle2 className="h-4 w-4 text-primary" /> Tax Info (W-9 / W-8BEN)
-                 </li>
-              </ul>
-              <Button className="w-full glow-primary h-12 font-bold" onClick={() => handleNext('identity')}>
-                 Start Identity Verification
-                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-           </Card>
+           </div>
 
-           <Card className="bg-[#0f0f13]/50 border-white/5 p-8 flex flex-col items-center text-center space-y-6 opacity-80">
-              <div className="h-20 w-20 rounded-2xl bg-muted/10 flex items-center justify-center">
-                 <FileText className="h-10 w-10 text-muted-foreground" />
+           {/* Step Content */}
+           <div className="bg-card p-6 md:p-8 rounded-xl md:rounded-2xl border border-border/50 shadow-sm space-y-6 md:space-y-8">
+              <div className="space-y-2">
+                 <h2 className="text-xl md:text-2xl font-bold text-foreground">Upload Documents</h2>
+                 <p className="text-sm text-muted-foreground font-medium max-w-md">Please provide a valid government-issued ID to verify your identity. We accept Passport, Driver's License, or National ID.</p>
               </div>
-              <div>
-                 <h3 className="text-xl font-bold mb-2">Business/Studio</h3>
-                 <p className="text-sm text-muted-foreground">For agencies, media houses, and companies.</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                 {/* Upload Box 1 */}
+                 <div className="border-2 border-dashed border-border/50 rounded-xl md:rounded-2xl p-6 md:p-8 text-center space-y-4 hover:bg-muted/30 hover:border-cyan-500/50 transition-all cursor-pointer group">
+                    <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto group-hover:bg-cyan-500/10 transition-colors">
+                       <ScanLine className="h-6 w-6 md:h-8 md:w-8 text-muted-foreground group-hover:text-cyan-500" />
+                    </div>
+                    <div className="space-y-1">
+                       <p className="font-bold text-foreground text-sm md:text-base">Front of ID</p>
+                       <p className="text-xs text-muted-foreground font-medium">Drag & drop or click to upload</p>
+                    </div>
+                 </div>
+
+                 {/* Upload Box 2 */}
+                 <div className="border-2 border-dashed border-border/50 rounded-xl md:rounded-2xl p-6 md:p-8 text-center space-y-4 hover:bg-muted/30 hover:border-cyan-500/50 transition-all cursor-pointer group">
+                    <div className="h-12 w-12 md:h-16 md:w-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto group-hover:bg-cyan-500/10 transition-colors">
+                       <ScanLine className="h-6 w-6 md:h-8 md:w-8 text-muted-foreground group-hover:text-cyan-500" />
+                    </div>
+                    <div className="space-y-1">
+                       <p className="font-bold text-foreground text-sm md:text-base">Back of ID</p>
+                       <p className="text-xs text-muted-foreground font-medium">Drag & drop or click to upload</p>
+                    </div>
+                 </div>
               </div>
-              <ul className="text-left w-full space-y-3 text-sm">
-                 <li className="flex items-center gap-3 text-muted-foreground italic">
-                    <Clock className="h-4 w-4" /> Coming Soon
-                 </li>
-              </ul>
-              <Button variant="outline" className="w-full h-12 border-dashed" disabled>
-                 Apply as Business
-              </Button>
-           </Card>
+
+              {/* Data Safety Notice */}
+              <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-xl border border-border/50">
+                 <Shield className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                 <div className="space-y-1">
+                    <p className="text-sm font-bold text-foreground">Your data is secure</p>
+                    <p className="text-xs text-muted-foreground font-medium leading-relaxed">
+                       We use bank-grade encryption to store your documents. Your information is only used for verification purposes and is never shared with third parties.
+                    </p>
+                 </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4 border-t border-border/50">
+                 <Button variant="ghost" className="w-full sm:w-auto font-bold text-muted-foreground hover:text-foreground">Back</Button>
+                 <Button className="w-full sm:w-auto ml-auto bg-cyan-600 hover:bg-cyan-700 text-white font-bold shadow-lg shadow-cyan-500/20" onClick={() => toast.success("Documents submitted")}>
+                    Submit Documents <ChevronRight className="h-4 w-4 ml-2" />
+                 </Button>
+              </div>
+           </div>
         </div>
-      )}
 
-      {currentStep === 'identity' && (
-         <Card className="bg-[#0f0f13] border-border/50 animate-fade-in">
-            <CardHeader>
-               <CardTitle>Personal Information</CardTitle>
-               <CardDescription>Legal name as it appears on your government-issued ID.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-               <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                     <Label>First Name</Label>
-                     <Input placeholder="John" className="bg-white/5 border-white/10" />
-                  </div>
-                  <div className="space-y-2">
-                     <Label>Last Name</Label>
-                     <Input placeholder="Doe" className="bg-white/5 border-white/10" />
-                  </div>
-                  <div className="space-y-2">
-                     <Label>Date of Birth</Label>
-                     <Input type="date" className="bg-white/5 border-white/10" />
-                  </div>
-                  <div className="space-y-2">
-                     <Label>Country of Residence</Label>
-                     <Input placeholder="United States" className="bg-white/5 border-white/10" />
-                  </div>
-               </div>
-               <div className="space-y-2">
-                  <Label>Address Line 1</Label>
-                  <Input placeholder="123 Creator Way" className="bg-white/5 border-white/10" />
-               </div>
-               <Button className="w-full h-12 font-bold glow-primary" onClick={() => handleNext('document')}>
-                  Continue to Document Upload
-               </Button>
-            </CardContent>
-         </Card>
-      )}
+        {/* Sidebar Info */}
+        <div className="lg:col-span-4 space-y-6 md:space-y-8">
+           {/* Requirements */}
+           <div className="bg-card p-6 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                 <FileText className="h-4 w-4" /> Requirements
+              </h3>
+              <ul className="space-y-3">
+                 {[
+                    { text: "Valid Government ID", check: true },
+                    { text: "Proof of Address", check: true },
+                    { text: "Selfie Verification", check: false },
+                    { text: "Address Verification", check: false },
+                 ].map((req, i) => (
+                    <li key={i} className="flex items-center gap-3 text-sm font-medium">
+                       <div className={cn(
+                          "h-5 w-5 rounded-full flex items-center justify-center shrink-0 border",
+                          req.check ? "bg-green-500 border-green-500 text-white" : "border-border/50 bg-muted/30"
+                       )}>
+                          {req.check && <Check className="h-3 w-3" />}
+                       </div>
+                       <span className={cn(req.check ? "text-foreground font-bold" : "text-muted-foreground")}>{req.text}</span>
+                    </li>
+                 ))}
+              </ul>
+           </div>
 
-      {currentStep === 'document' && (
-         <Card className="bg-[#0f0f13] border-border/50 animate-fade-in overflow-hidden">
-            <CardHeader>
-               <CardTitle>Government Issued ID</CardTitle>
-               <CardDescription>Upload a clear photo of your Passport, Driver's License, or National ID.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-8">
-               <div className="border-2 border-dashed border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-center space-y-4 hover:border-primary/50 transition-colors cursor-pointer group bg-white/[0.02]">
-                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                     <Upload className="h-8 w-8 text-primary" />
-                  </div>
-                  <div>
-                     <p className="font-bold text-lg">Click to upload or drag & drop</p>
-                     <p className="text-sm text-muted-foreground mt-1">PNG, JPG or PDF (MAX. 5MB)</p>
-                  </div>
-                  <Input type="file" className="hidden" />
-               </div>
-
-               {uploadProgress > 0 && (
-                  <div className="space-y-2">
-                     <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                        <span>Uploading ID Front...</span>
-                        <span>{uploadProgress}%</span>
-                     </div>
-                     <Progress value={uploadProgress} className="h-2" />
-                  </div>
-               )}
-
-               <div className="flex gap-4">
-                  <Button variant="ghost" className="flex-1" onClick={() => handleNext('identity')}>Back</Button>
-                  <Button className="flex-[2] h-12 font-bold glow-primary" onClick={() => simulateUpload('selfie')}>
-                     Verify Document
-                  </Button>
-               </div>
-            </CardContent>
-         </Card>
-      )}
-
-      {currentStep === 'selfie' && (
-         <Card className="bg-[#0f0f13] border-border/50 animate-fade-in">
-            <CardHeader className="text-center">
-               <CardTitle className="text-2xl">Facial Verification</CardTitle>
-               <CardDescription>Position your face in the center and ensure your environment is well lit.</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col items-center space-y-8">
-               <div className="h-64 w-64 rounded-full border-4 border-primary/20 bg-white/5 flex flex-col items-center justify-center relative overflow-hidden group">
-                  <Camera className="h-12 w-12 text-primary opacity-50 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent" />
-                  {/* Scan Line Effect */}
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-primary/50 blur-[2px] animate-[scan_2s_linear_infinite]" />
-               </div>
-
-               <div className="space-y-4 w-full">
-                  <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex gap-3">
-                     <AlertCircle className="h-5 w-5 text-yellow-500 shrink-0" />
-                     <p className="text-xs text-yellow-500/90 leading-relaxed font-medium">
-                        Ensure you are not wearing a hat, glasses, or anything that obscures your face.
-                     </p>
-                  </div>
-                  <Button className="w-full h-12 font-bold glow-primary" onClick={() => simulateUpload('pending')}>
-                     Confirm Facial Scan
-                  </Button>
-               </div>
-            </CardContent>
-         </Card>
-      )}
-
-      {currentStep === 'pending' && (
-         <Card className="bg-[#0f0f13] border-border/50 animate-fade-in p-12 text-center">
-            <div className="relative inline-block mb-8">
-               <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
-                  <Clock className="h-12 w-12 text-primary" />
-               </div>
-               <div className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full bg-background border border-border flex items-center justify-center">
-                  <span className="text-xs font-black animate-spin">/</span>
-               </div>
-            </div>
-            <h2 className="text-3xl font-black mb-4 uppercase italic tracking-tighter">Verification <span className="text-gradient">In Progress</span></h2>
-            <p className="text-muted-foreground max-w-sm mx-auto leading-relaxed">
-               We are currently processing your identity verification and reviewing your documents. This usually takes between <strong>2 and 24 hours</strong>.
-            </p>
-            <div className="mt-12 pt-8 border-t border-white/5 flex flex-col gap-4">
-               <Button variant="outline" className="h-11 border-white/10" onClick={() => toast.info("Status manually refreshed")}>Refresh Status</Button>
-               <Button variant="ghost" onClick={() => handleNext('start')}>Back to Dashboard</Button>
-            </div>
-         </Card>
-      )}
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes scan {
-          0% { top: 0%; }
-          100% { top: 100%; }
-        }
-      `}} />
+           {/* Help */}
+           <div className="bg-card p-6 md:p-8 rounded-xl border border-border/50 shadow-sm space-y-4">
+              <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Need Help?</h3>
+              <p className="text-xs text-muted-foreground font-medium leading-relaxed mb-2">
+                 If you're having trouble uploading your documents or have questions about the process, our support team is here to help.
+              </p>
+              <Button variant="outline" className="w-full font-bold">Contact Support</Button>
+           </div>
+        </div>
+      </div>
     </div>
   );
 }

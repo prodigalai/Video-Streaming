@@ -3,17 +3,17 @@ import {
   Home,
   Radio,
   Wallet,
-  User,
   Heart,
-  Bell,
   Settings,
   Library,
   TrendingUp,
   Compass,
   Users,
   Clock,
+  MessageSquare,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const mainNavItems = [
   { icon: Home, label: "Home", path: "/" },
@@ -21,6 +21,7 @@ const mainNavItems = [
   { icon: Users, label: "Following", path: "/following" },
   { icon: TrendingUp, label: "Trending", path: "/trending" },
   { icon: Radio, label: "Live", path: "/live" },
+  { icon: MessageSquare, label: "Messages", path: "/messages" },
 ];
 
 const libraryItems = [
@@ -40,6 +41,7 @@ interface DesktopSidebarProps {
 
 export function DesktopSidebar({ isOpen }: DesktopSidebarProps) {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   const NavItem = ({ icon: Icon, label, path }: { icon: any; label: string; path: string }) => {
     const isActive = location.pathname === path;
@@ -92,21 +94,24 @@ export function DesktopSidebar({ isOpen }: DesktopSidebarProps) {
           <div className="h-px w-full bg-border/40" />
         </div>
 
-        {/* Library */}
-        <div className="space-y-1">
-          {isOpen && (
-            <p className="px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">
-              Library
-            </p>
-          )}
-          {libraryItems.map((item) => (
-            <NavItem key={item.path} {...item} />
-          ))}
-        </div>
-
-        <div className="px-2">
-          <div className="h-px w-full bg-border/40" />
-        </div>
+        {/* Library - show only when logged in (fans) */}
+        {isAuthenticated && (
+          <>
+            <div className="space-y-1">
+              {isOpen && (
+                <p className="px-3 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-3">
+                  Library
+                </p>
+              )}
+              {libraryItems.map((item) => (
+                <NavItem key={item.path} {...item} />
+              ))}
+            </div>
+            <div className="px-2">
+              <div className="h-px w-full bg-border/40" />
+            </div>
+          </>
+        )}
 
         {/* For You / Following */}
         <div className="space-y-1">

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { 
   Upload, Pencil, Lock, Shield, Smartphone, Mail, Bell, CreditCard, 
-  Globe, Laptop, Key, Plus, Trash2, CheckCircle2, AlertCircle 
+  Globe, Laptop, Key, Plus, Trash2, CheckCircle2, AlertCircle,
+  Zap, Settings, ShieldCheck, Sparkles, User, Box, Signal, LockIcon
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -14,356 +15,267 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
 
   const handleSave = () => {
-    toast.success("Settings saved successfully");
+    toast.success("Identity Matrix Updated", {
+        style: { background: '#0a0a0f', border: '1px solid rgba(139,92,246,0.3)', color: 'white' }
+    });
   };
 
   const handleConnect = (platform: string) => {
-    toast.info(`Connecting to ${platform}...`);
+    toast.info(`Initializing uplink to ${platform}...`);
   };
+
+  const menuItems = [
+    { id: "profile", label: "Identity", icon: User },
+    { id: "security", label: "Shield", icon: Lock },
+    { id: "preferences", label: "Matrix", icon: Settings },
+    { id: "notifications", label: "Signals", icon: Bell },
+    { id: "connections", label: "Uplinks", icon: Signal },
+    { id: "developer", label: "Terminal", icon: Key },
+    { id: "payment-methods", label: "Credits", icon: CreditCard },
+  ];
 
   return (
     <MainLayout>
-      <div className="container py-8 max-w-5xl">
-        <h1 className="text-3xl font-black mb-8 px-2">Settings</h1>
+      <div className="min-h-screen bg-[#050508] relative overflow-hidden pb-20">
         
-        <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="h-auto bg-transparent p-0 gap-6 border-b border-border/40 w-full justify-start rounded-none mb-8 overflow-x-auto">
-            {["Profile", "Security", "Preferences", "Notifications", "Connections", "Developer", "Payment methods"].map((tab) => (
-              <TabsTrigger 
-                key={tab}
-                value={tab.toLowerCase().replace(" ", "-")}
-                className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none px-2 pb-3 text-sm font-semibold text-muted-foreground data-[state=active]:text-primary transition-all hover:text-white"
-              >
-                {tab}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+        {/* Dynamic Space Background */}
+        <div className="absolute top-0 right-0 w-full h-[600px] bg-gradient-to-b from-violet-600/[0.04] to-transparent -z-10" />
+        <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] bg-violet-600/[0.03] rounded-full blur-[120px] -z-10 animate-pulse" />
 
-          {/* PROFILE TAB */}
-          <TabsContent value="profile" className="space-y-8 animate-fade-in">
-            <h2 className="text-lg font-bold mb-4">Profile</h2>
-            <section className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground ml-1">Profile Preview</h3>
-              <Card className="bg-[#0f0f13] border-border/50 p-6">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-                  <div className="flex-1 flex items-center gap-4">
-                     <Avatar className="h-16 w-16 ring-2 ring-primary/20">
-                        <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
-                        <AvatarFallback>AN</AvatarFallback>
-                     </Avatar>
-                     <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                           <span className="font-bold text-lg text-white">About AshN0408</span>
-                           <span className="bg-primary/10 text-primary text-[10px] font-bold px-1.5 py-0.5 rounded">0 Followers</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground">AshN0408's Kick Channel</p>
-                     </div>
-                  </div>
-                  <Button variant="secondary" className="bg-white/10 hover:bg-white/15 text-white h-9" onClick={() => toast("Opening avatar editor...")}>
-                    Edit Avatar
-                  </Button>
-                </div>
-              </Card>
-            </section>
-
-            <section className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground ml-1">Channel Banner</h3>
-              <Card className="bg-[#0f0f13] border-border/50 p-6 flex flex-col items-center">
-                 <div className="w-full h-32 md:h-40 rounded-lg bg-green-500 overflow-hidden mb-6 relative group">
-                    <div className="absolute inset-0 opacity-100" 
-                        style={{
-                        backgroundImage: 'linear-gradient(45deg, #1a1a1a 25%, transparent 25%), linear-gradient(-45deg, #1a1a1a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1a 75%), linear-gradient(-45deg, transparent 75%, #1a1a1a 75%)',
-                        backgroundSize: '20px 20px',
-                        backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
-                        backgroundColor: '#00ff00' 
-                        }} 
-                    />
-                 </div>
-                 <div className="flex flex-col items-center gap-2">
-                    <Button variant="secondary" className="bg-white/10 hover:bg-white/15 text-white" onClick={() => toast("Banner upload dialog opened")}>
-                      Update Banner image
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Minimum image size: 1200×134px and less than 4MB
-                    </p>
-                 </div>
-              </Card>
-            </section>
-
-             <section className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground ml-1">Offline Stream Banner</h3>
-              <Card className="bg-[#0f0f13] border-border/50 p-6 flex flex-col items-center">
-                <div className="w-full aspect-video max-h-64 rounded-lg bg-black overflow-hidden relative mb-6 border border-white/5">
-                   <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
-                      <h1 className="text-6xl font-black text-white/5 tracking-tighter">OFFLINE</h1>
+        <div className="container py-12 px-6 max-w-6xl space-y-12 relative z-10">
+          
+          {/* Enhanced Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+             <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                   <div className="h-10 w-10 rounded-xl bg-violet-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                       <Settings className="h-5 w-5 text-white" />
                    </div>
+                   <h1 className="text-4xl font-black text-white uppercase tracking-tight italic">Core Config</h1>
                 </div>
-                 <div className="flex flex-col items-center gap-2">
-                    <Button variant="secondary" className="bg-white/10 hover:bg-white/15 text-white" onClick={() => toast("Offline banner upload started")}>
-                       <Upload className="h-4 w-4 mr-2" />
-                       Upload Offline Banner
-                    </Button>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Recommended size: 1920×1080px and less than 8MB
-                    </p>
-                 </div>
-              </Card>
-            </section>
-          </TabsContent>
-
-          {/* SECURITY TAB */}
-          <TabsContent value="security" className="space-y-6 animate-fade-in">
-            <h2 className="text-lg font-bold mb-4">Security</h2>
-            <Card className="bg-[#0f0f13] border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Password</CardTitle>
-                <CardDescription>Update your password to keep your account secure.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="current">Current Password</Label>
-                  <Input id="current" type="password" placeholder="••••••••" className="bg-white/5 border-white/10" />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="new">New Password</Label>
-                  <Input id="new" type="password" placeholder="Min. 8 characters" className="bg-white/5 border-white/10" />
-                </div>
-                <Button onClick={handleSave}>Change Password</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#0f0f13] border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Shield className="w-5 h-5 text-primary" /> Two-Factor Authentication</CardTitle>
-                <CardDescription>Add an extra layer of security to your account.</CardDescription>
-              </CardHeader>
-              <CardContent className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="font-medium">Authenticator App</p>
-                  <p className="text-sm text-muted-foreground">Use an app like Google Authenticator or Authy.</p>
-                </div>
-                <Button variant="outline" onClick={() => toast("2FA Setup Wizard Started")}>Setup 2FA</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#0f0f13] border-border/50">
-              <CardHeader>
-                <CardTitle>Active Sessions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
-                  <div className="flex items-center gap-4">
-                    <Laptop className="w-8 h-8 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">MacBook Pro • Chrome</p>
-                      <p className="text-xs text-green-500 font-bold">Current Device</p>
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="border-green-500/50 text-green-500">Active</Badge>
-                </div>
-                <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/5">
-                  <div className="flex items-center gap-4">
-                    <Smartphone className="w-8 h-8 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">iPhone 14 • App</p>
-                      <p className="text-xs text-muted-foreground">Last active: 2 hours ago</p>
-                    </div>
-                  </div>
-                   <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-400 hover:bg-red-500/10" onClick={() => toast.success("Session revoked")}>Revoke</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* PREFERENCES TAB */}
-          <TabsContent value="preferences" className="space-y-6 animate-fade-in">
-             <h2 className="text-lg font-bold mb-4">Preferences</h2>
-             <Card className="bg-[#0f0f13] border-border/50">
-              <CardContent className="space-y-6 pt-6">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-base">Dark Mode</Label>
-                    <p className="text-sm text-muted-foreground">Adjust the appearance of the application.</p>
-                  </div>
-                  <Switch defaultChecked onCheckedChange={() => toast("Theme updated")} />
-                </div>
-                <Separator className="bg-white/5" />
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-base">Autoplay Videos</Label>
-                    <p className="text-sm text-muted-foreground">Automatically play videos when browsing.</p>
-                  </div>
-                  <Switch defaultChecked onCheckedChange={(c) => toast(c ? "Autoplay enabled" : "Autoplay disabled")} />
-                </div>
-                 <Separator className="bg-white/5" />
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-base">Language</Label>
-                    <p className="text-sm text-muted-foreground">Select your preferred language.</p>
-                  </div>
-                  <Button variant="outline" className="w-[150px] justify-between" onClick={() => toast("Language selector opened")}>
-                     English (US)
-                     <Globe className="w-4 h-4 ml-2 opacity-50" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* NOTIFICATIONS TAB */}
-          <TabsContent value="notifications" className="space-y-6 animate-fade-in">
-            <h2 className="text-lg font-bold mb-4">Notifications</h2>
-             <Card className="bg-[#0f0f13] border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Bell className="w-5 h-5 text-primary" /> Email Notifications</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {["Live Stream Alerts", "New Subscribers", "Weekly Digest", "Product Updates"].map((item) => (
-                  <div key={item} className="flex items-center justify-between">
-                    <Label>{item}</Label>
-                    <Switch defaultChecked onCheckedChange={(c) => toast(`${item} ${c ? "enabled" : "disabled"}`)} />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-             <Card className="bg-[#0f0f13] border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Push Notifications</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {["Mentions", "ChatMessage", "Stream Status"].map((item) => (
-                  <div key={item} className="flex items-center justify-between">
-                    <Label>{item}</Label>
-                    <Switch defaultChecked={item !== "ChatMessage"} onCheckedChange={(c) => toast(`${item} ${c ? "enabled" : "disabled"}`)} />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* CONNECTIONS TAB */}
-          <TabsContent value="connections" className="space-y-6 animate-fade-in">
-             <h2 className="text-lg font-bold mb-4">Connected Accounts</h2>
-             <Card className="bg-[#0f0f13] border-border/50">
-               <CardContent className="space-y-6 pt-6">
-                 {[
-                   { name: "Twitch", connected: true, user: "AshN0408" },
-                   { name: "YouTube", connected: false },
-                   { name: "Discord", connected: true, user: "AshN#1234" },
-                   { name: "Twitter / X", connected: false },
-                 ].map((app) => (
-                   <div key={app.name} className="flex items-center justify-between">
-                     <div className="flex items-center gap-4">
-                       <div className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
-                         <span className="font-bold text-xs">{app.name[0]}</span>
-                       </div>
-                       <div>
-                         <p className="font-bold">{app.name}</p>
-                         {app.connected ? (
-                           <p className="text-xs text-green-500 flex items-center gap-1"><CheckCircle2 className="w-3 h-3" /> Connected as {app.user}</p>
-                         ) : (
-                           <p className="text-xs text-muted-foreground">Not connected</p>
-                         )}
-                       </div>
-                     </div>
-                     <Button 
-                        variant={app.connected ? "outline" : "default"} 
-                        size="sm"
-                        onClick={() => app.connected ? toast.error(`Disconnected from ${app.name}`) : handleConnect(app.name)}
-                      >
-                       {app.connected ? "Disconnect" : "Connect"}
-                     </Button>
-                   </div>
-                 ))}
-               </CardContent>
-             </Card>
-          </TabsContent>
-
-          {/* DEVELOPER TAB */}
-          <TabsContent value="developer" className="space-y-6 animate-fade-in">
-            <h2 className="text-lg font-bold mb-4">Developer Settings</h2>
-            <Card className="bg-[#0f0f13] border-border/50">
-              <CardHeader>
-                 <CardTitle className="flex items-center gap-2"><Key className="w-5 h-5 text-primary" /> API Keys</CardTitle>
-                 <CardDescription>Manage your API keys for external integrations.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                 <div className="p-4 bg-white/5 rounded-md border border-white/5 flex items-center justify-between">
-                    <div>
-                       <p className="font-mono text-sm text-muted-foreground">sk_live_51M...x28</p>
-                       <p className="text-xs text-muted-foreground mt-1">Created on Feb 2, 2026</p>
-                    </div>
-                    <div className="flex gap-2">
-                       <Button variant="ghost" size="sm" onClick={() => { navigator.clipboard.writeText("sk_live_51M...x28"); toast("Copied to clipboard"); }}>Copy</Button>
-                       <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-400 hover:bg-red-500/10" onClick={() => toast.error("Key revoked")}>Revoke</Button>
-                    </div>
-                 </div>
-                 <Button className="w-full" variant="outline" onClick={() => toast.success("New API Key generated")}>
-                    <Plus className="w-4 h-4 mr-2" /> Generate New Key
-                 </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* PAYMENT METHODS TAB */}
-           <TabsContent value="payment-methods" className="space-y-6 animate-fade-in">
-            <h2 className="text-lg font-bold mb-4">Payment Methods</h2>
-            <div className="grid gap-4 md:grid-cols-2">
-               <Card className="bg-primary/10 border-primary/50 relative overflow-hidden">
-                 <CardContent className="pt-6">
-                    <div className="flex justify-between items-start mb-8">
-                       <CreditCard className="w-8 h-8 text-primary" />
-                       <Badge className="bg-primary text-black hover:bg-primary">Default</Badge>
-                    </div>
-                    <div className="mb-4">
-                       <p className="font-mono text-lg tracking-wider">•••• •••• •••• 4242</p>
-                    </div>
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                       <span>Expires 12/28</span>
-                       <span>Visa</span>
-                    </div>
-                 </CardContent>
-               </Card>
-               
-               <Button variant="outline" className="h-full min-h-[180px] border-dashed flex flex-col gap-2 hover:bg-white/5" onClick={() => toast("Add payment method modal opened")}>
-                  <Plus className="w-8 h-8 opacity-50" />
-                  <span>Add Payment Method</span>
-               </Button>
+                <p className="text-sm font-medium text-white/40 italic">Manage your interface parameters and node security protocols.</p>
+             </div>
+             
+             <div className="flex items-center gap-4 px-6 py-3 rounded-2xl bg-white/[0.02] border border-white/5">
+                <ShieldCheck className="h-4 w-4 text-violet-500" />
+                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">Integrity Level: MAXIMUM</span>
+             </div>
+          </div>
+          
+          <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab} className="w-full space-y-12">
+            <div className="border-b border-white/5 pb-1">
+                <TabsList className="h-auto bg-transparent p-0 gap-8 w-full justify-start rounded-none overflow-x-auto scrollbar-hide">
+                    {menuItems.map((item) => (
+                    <TabsTrigger 
+                        key={item.id}
+                        value={item.id}
+                        className="bg-transparent data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-violet-500 rounded-none px-0 pb-5 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] transition-all hover:text-white relative group"
+                    >
+                        <item.icon className="h-3.5 w-3.5 mr-2 opacity-20 group-hover:opacity-100 transition-opacity" />
+                        {item.label}
+                        {activeTab === item.id && (
+                            <motion.div layoutId="activeSettingsTab" className="absolute bottom-0 left-0 right-0 h-1 bg-violet-600 rounded-t-full" />
+                        )}
+                    </TabsTrigger>
+                    ))}
+                </TabsList>
             </div>
 
-            <Card className="bg-[#0f0f13] border-border/50 mt-6">
-               <CardHeader>
-                  <CardTitle>Transaction History</CardTitle>
-               </CardHeader>
-               <CardContent>
-                  <div className="space-y-4">
-                     {[
-                        { id: "#TX1029", desc: "channel_sub_gift", date: "Feb 01, 2026", amount: "-$5.00", status: "Completed" },
-                        { id: "#TX1028", desc: "wallet_topup", date: "Jan 28, 2026", amount: "+$50.00", status: "Completed" },
-                        { id: "#TX1027", desc: "stream_donation", date: "Jan 15, 2026", amount: "-$10.00", status: "Completed" },
-                     ].map((tx) => (
-                        <div key={tx.id} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-                           <div>
-                              <p className="font-medium text-sm">{tx.desc}</p>
-                              <p className="text-xs text-muted-foreground">{tx.date} • {tx.id}</p>
-                           </div>
-                           <div className="text-right">
-                              <p className={tx.amount.startsWith("+") ? "text-green-500 font-bold" : "text-white font-bold"}>{tx.amount}</p>
-                              <p className="text-xs text-muted-foreground">{tx.status}</p>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-               </CardContent>
-            </Card>
-          </TabsContent>
+            <AnimatePresence mode="wait">
+                {/* PROFILE TAB */}
+                <TabsContent value="profile" className="space-y-12 focus-visible:outline-none">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 lg:grid-cols-3 gap-10"
+                    >
+                        <div className="lg:col-span-2 space-y-10">
+                            <section className="space-y-6">
+                                <h3 className="text-sm font-black text-white uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <User className="h-4 w-4 text-violet-500" />
+                                    Identity Profile
+                                </h3>
+                                <div className="bg-[#0a0a0f] border border-white/5 p-8 rounded-[2.5rem] shadow-2xl relative group overflow-hidden">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-violet-600/30 to-transparent" />
+                                    <div className="flex flex-col sm:flex-row items-center gap-10 relative z-10">
+                                        <div className="relative group/avatar">
+                                            <div className="absolute inset-0 bg-violet-600/20 blur-xl rounded-full opacity-0 group-hover/avatar:opacity-100 transition-opacity" />
+                                            <div className="h-32 w-32 rounded-[2rem] p-1 bg-gradient-to-br from-violet-600/20 via-white/5 to-fuchsia-600/20 transition-transform group-hover/avatar:scale-105">
+                                                <Avatar className="h-full w-full rounded-[1.8rem] border-2 border-[#0a0a0f] shadow-2xl">
+                                                    <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
+                                                    <AvatarFallback className="bg-violet-600 text-white font-black">AN</AvatarFallback>
+                                                </Avatar>
+                                            </div>
+                                            <Button size="icon" className="absolute -bottom-2 -right-2 h-10 w-10 rounded-xl bg-violet-600 hover:bg-violet-700 text-white border-none shadow-xl shadow-violet-500/20">
+                                                <Pencil className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                        <div className="flex-1 space-y-4 text-center sm:text-left">
+                                            <div className="space-y-1">
+                                                <p className="text-2xl font-black text-white uppercase tracking-tighter italic">{username}</p>
+                                                <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.4em]">Primary Node Identifier</p>
+                                            </div>
+                                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
+                                                <div className="bg-white/5 px-4 py-2 rounded-xl flex items-center gap-2">
+                                                    <Sparkles className="h-3.5 w-3.5 text-violet-400" />
+                                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Master Identity</span>
+                                                </div>
+                                                <div className="bg-white/5 px-4 py-2 rounded-xl flex items-center gap-2">
+                                                    <Signal className="h-3.5 w-3.5 text-emerald-500" />
+                                                    <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">Broadcast Ready</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
 
-        </Tabs>
+                            <section className="space-y-6">
+                                <h3 className="text-sm font-black text-white uppercase tracking-[0.3em] flex items-center gap-2">
+                                    <Box className="h-4 w-4 text-violet-500" />
+                                    Visual Overlays
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="bg-[#0a0a0f] border border-white/5 rounded-[2.5rem] p-8 space-y-6 relative group overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-violet-600/[0.02] to-transparent pointer-events-none" />
+                                        <div className="space-y-2">
+                                            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Signal Banner</h4>
+                                            <p className="text-[9px] font-medium text-white/20 uppercase tracking-widest">Appears on your main profile node</p>
+                                        </div>
+                                        <div className="w-full h-24 rounded-[1.5rem] bg-violet-600/10 border border-white/5 overflow-hidden flex items-center justify-center relative">
+                                            <div className="absolute inset-0 opacity-40 grayscale" 
+                                                style={{
+                                                backgroundImage: 'linear-gradient(45deg, #0a0a0f 25%, transparent 25%), linear-gradient(-45deg, #0a0a0f 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #0a0a0f 75%), linear-gradient(-45deg, transparent 75%, #0a0a0f 75%)',
+                                                backgroundSize: '20px 20px',
+                                                backgroundColor: '#8b5cf6' 
+                                                }} 
+                                            />
+                                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white relative z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Upload className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <div className="bg-[#0a0a0f] border border-white/5 rounded-[2.5rem] p-8 space-y-6 relative group overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-fuchsia-600/[0.02] to-transparent pointer-events-none" />
+                                        <div className="space-y-2">
+                                            <h4 className="text-[10px] font-black text-white uppercase tracking-[0.2em]">Idle Loop Overlay</h4>
+                                            <p className="text-[9px] font-medium text-white/20 uppercase tracking-widest">Displayed when transmission is offline</p>
+                                        </div>
+                                        <div className="w-full h-24 rounded-[1.5rem] bg-black border border-white/5 overflow-hidden flex items-center justify-center relative">
+                                            <div className="absolute inset-0 bg-[#0f0f14] flex items-center justify-center group-hover:scale-110 transition-transform">
+                                                <h1 className="text-3xl font-black text-white/5 tracking-tighter uppercase italic">Offline</h1>
+                                            </div>
+                                            <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 text-white relative z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Upload className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+
+                        <aside className="space-y-8">
+                            <div className="bg-gradient-to-br from-violet-600/10 to-transparent border border-violet-500/20 rounded-[2.5rem] p-8 space-y-8 relative overflow-hidden group shadow-2xl">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/20 rounded-full blur-[60px] -mr-16 -mt-16" />
+                                <div className="space-y-2 relative z-10">
+                                    <h4 className="text-[10px] font-black text-violet-400 uppercase tracking-[0.4em]">Protocol Status</h4>
+                                    <p className="text-xl font-black text-white italic tracking-tight leading-none uppercase">Identity Fully Synced</p>
+                                </div>
+                                <div className="space-y-6 relative z-10">
+                                    {[
+                                        { label: "Biometrics", status: "Active" },
+                                        { label: "Chain Link", status: "Encrypted" },
+                                        { label: "Node Visibility", status: "Public" }
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center justify-between">
+                                            <span className="text-[10px] font-black text-white/30 uppercase tracking-widest">{item.label}</span>
+                                            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded-full">{item.status}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <Button onClick={handleSave} className="w-full h-14 bg-violet-600 hover:bg-violet-700 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-violet-500/30 transition-all active:scale-95 border-none group">
+                                    SAVE PARAMETERS
+                                    <Zap className="h-3.5 w-3.5 ml-2 group-hover:fill-current" />
+                                </Button>
+                            </div>
+
+                            <div className="bg-white/[0.02] border border-white/5 rounded-[2.5rem] p-8 text-center space-y-4 opacity-40">
+                                <Shield className="h-8 w-8 text-white/10 mx-auto" />
+                                <p className="text-[9px] font-black text-white/40 uppercase tracking-[0.3em] leading-relaxed">
+                                    This node is encrypted via <br/> SEC-CHAIN Protocol v4.0
+                                </p>
+                            </div>
+                        </aside>
+                    </motion.div>
+                </TabsContent>
+
+                {/* SECURITY TAB */}
+                <TabsContent value="security" className="space-y-8 focus-visible:outline-none">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="grid grid-cols-1 md:grid-cols-2 gap-8"
+                    >
+                        <Card className="bg-[#0a0a0f] border-white/5 rounded-[2.5rem] overflow-hidden group">
+                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-violet-600/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                           <CardHeader className="p-8 pb-4">
+                                <CardTitle className="flex items-center gap-3 text-sm font-black uppercase tracking-[0.3em] text-white">
+                                    <Lock className="h-4 w-4 text-violet-500" />
+                                    Access Protocol
+                                </CardTitle>
+                           </CardHeader>
+                           <CardContent className="p-8 pt-0 space-y-8">
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-white/20 uppercase tracking-widest ml-1">Current Key</Label>
+                                        <Input type="password" placeholder="••••••••" className="h-12 bg-white/5 border-white/10 rounded-xl" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label className="text-[10px] font-black text-white/20 uppercase tracking-widest ml-1">New Access Key</Label>
+                                        <Input type="password" placeholder="Min. 12 characters recommended" className="h-12 bg-white/5 border-white/10 rounded-xl" />
+                                    </div>
+                                </div>
+                                <Button className="w-full h-12 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase tracking-widest rounded-xl transition-all">UPDATE ACCESS</Button>
+                           </CardContent>
+                        </Card>
+
+                        <Card className="bg-gradient-to-br from-violet-600/10 to-[#0a0a0f] border-violet-500/20 rounded-[2.5rem] overflow-hidden group">
+                           <CardHeader className="p-8 pb-4">
+                                <CardTitle className="flex items-center gap-3 text-sm font-black uppercase tracking-[0.3em] text-white">
+                                    <Shield className="h-4 w-4 text-violet-500" />
+                                    Biometric 2FA
+                                </CardTitle>
+                           </CardHeader>
+                           <CardContent className="p-8 pt-0 space-y-12">
+                                <p className="text-xs font-medium text-white/40 leading-relaxed">
+                                    Add an extra identity layer to your node. Requires cryptographic confirmation for every new session initialization.
+                                </p>
+                                <div className="flex items-center justify-between p-6 bg-white/[0.03] border border-white/5 rounded-3xl">
+                                    <div className="flex items-center gap-4">
+                                        <div className="h-12 w-12 rounded-2xl bg-violet-600/20 flex items-center justify-center">
+                                            <Smartphone className="h-6 w-6 text-violet-400" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-[10px] font-black text-white uppercase tracking-widest">Mobile Sync</p>
+                                            <p className="text-[9px] font-black text-white/20 uppercase tracking-widest">NOT ACTIVE</p>
+                                        </div>
+                                    </div>
+                                    <Button variant="outline" className="h-10 rounded-xl font-black text-[9px] uppercase tracking-widest border-white/10 hover:bg-violet-600 hover:text-white hover:border-violet-600">INITIALIZE</Button>
+                                </div>
+                           </CardContent>
+                        </Card>
+                    </motion.div>
+                </TabsContent>
+            </AnimatePresence>
+          </Tabs>
+        </div>
       </div>
     </MainLayout>
   );

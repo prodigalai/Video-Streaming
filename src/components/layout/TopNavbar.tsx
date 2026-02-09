@@ -50,10 +50,10 @@ export function TopNavbar({ onMenuToggle, isMenuOpen }: TopNavbarProps) {
             </Button>
             <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
               <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-lg overflow-hidden flex items-center justify-center glow-primary-sm group-hover:shadow-glow transition-all duration-300">
-                <img src="/logo.png" alt="StreamVault" className="h-full w-full object-cover" />
+                <img src="/logo.png" alt="Fans on Chain Limited" className="h-full w-full object-cover" />
               </div>
               <span className="hidden sm:block text-base sm:text-lg font-black text-gradient tracking-tight">
-                StreamVault
+                Fans on Chain Limited
               </span>
             </Link>
             <div className="hidden md:block h-6 w-px bg-border/40 mx-2" />

@@ -102,11 +102,14 @@ export default function LiveWatchPage() {
   };
 
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isCssFullScreen, setIsCssFullScreen] = useState(false);
   const playerContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleFullScreenChange = () => {
-      setIsFullScreen(!!document.fullscreenElement);
+      const isApiFullScreen = !!document.fullscreenElement;
+      setIsFullScreen(isApiFullScreen);
+      if (isApiFullScreen) setIsCssFullScreen(false);
     };
 
     document.addEventListener("fullscreenchange", handleFullScreenChange);
@@ -114,20 +117,31 @@ export default function LiveWatchPage() {
   }, []);
 
   const toggleFullScreen = async () => {
-    if (!document.fullscreenElement) {
-      if (playerContainerRef.current) {
-        try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    if (isCssFullScreen) {
+      setIsCssFullScreen(false);
+      return;
+    }
+
+    if (playerContainerRef.current) {
+      try {
+        if (playerContainerRef.current.requestFullscreen) {
           await playerContainerRef.current.requestFullscreen();
-        } catch (err) {
-          console.error("Error attempting to enable full-screen mode:", err);
+        } else {
+          setIsCssFullScreen(true);
         }
-      }
-    } else {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen();
+      } catch (err) {
+        console.error("Fullscreen API failed, falling back to CSS:", err);
+        setIsCssFullScreen(true);
       }
     }
   };
+
+  const isViewFullScreen = isFullScreen || isCssFullScreen;
 
   return (
     <div className="h-screen flex flex-col bg-[#05020d] relative text-white overflow-hidden">
@@ -162,12 +176,16 @@ export default function LiveWatchPage() {
             <ScrollArea className="flex-1">
                <div className={cn(
                   "transition-all duration-500",
-                  isTheaterMode ? "w-full pb-20 md:pb-0" : "container p-4 lg:p-6 pb-20 md:pb-6"
+                  isViewFullScreen ? "p-0 w-full h-full" : isTheaterMode ? "w-full pb-20 md:pb-0" : "container p-4 lg:p-6 pb-20 md:pb-6"
                )}>
                   {/* Video Player Container */}
                   <div ref={playerContainerRef} className={cn(
                      "relative bg-black group transition-all duration-500 shadow-2xl overflow-hidden",
-                     isTheaterMode ? "w-full aspect-[21/9]" : "aspect-video rounded-3xl border border-white/5"
+                     isViewFullScreen 
+                        ? "fixed inset-0 z-[100] w-screen h-[100dvh]" 
+                        : isTheaterMode 
+                           ? "w-full aspect-[21/9]" 
+                           : "aspect-video rounded-3xl border border-white/5"
                   )}>
                      <img
                         src={streamData.thumbnail}
@@ -196,7 +214,7 @@ export default function LiveWatchPage() {
                                  className="h-10 w-10 rounded-xl bg-black/60 hover:bg-primary text-white border border-white/10"
                                  onClick={toggleFullScreen}
                               >
-                                 {isFullScreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
+                                 {isViewFullScreen ? <Minimize className="h-5 w-5" /> : <Maximize className="h-5 w-5" />}
                               </Button>
                            </TooltipTrigger>
                            <TooltipContent side="bottom">Full Screen</TooltipContent>

@@ -4,6 +4,7 @@ import { LayoutDashboard, Film, Radio, BarChart2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { StudioNavbar } from "./StudioNavbar";
 import { StudioSidebar } from "./StudioSidebar";
+import { Footer } from "../Footer";
 import { cn } from "@/lib/utils";
 
 interface StudioLayoutProps {
@@ -24,7 +25,7 @@ export function StudioLayout({ children }: StudioLayoutProps) {
   const StudioBottomNav = () => (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 h-16 glass-card border-t border-border/50 px-6 flex items-center justify-between">
       {[
-        { icon: LayoutDashboard, label: "Studio", path: "/studio/dashboard" },
+        { icon: LayoutDashboard, label: "Creator", path: "/studio/dashboard" },
         { icon: Film, label: "Content", path: "/studio/content" },
         { icon: Radio, label: "Live", path: "/studio/live" },
         { icon: BarChart2, label: "Analytics", path: "/studio/analytics" },
@@ -74,13 +75,14 @@ export function StudioLayout({ children }: StudioLayoutProps) {
       
       <main
         className={cn(
-          "pt-16 pb-20 lg:pb-8 transition-all duration-300 min-h-screen relative z-10",
-          isSidebarOpen ? "lg:pl-64" : "lg:pl-16"
+          "pt-12 pb-20 lg:pb-8 transition-all duration-300 min-h-screen relative z-10 flex flex-col",
+          isSidebarOpen ? "lg:pl-64" : "lg:pl-20"
         )}
       >
-        <div className="container p-4 md:p-6 lg:p-8 animate-fade-in">
+        <div className="flex-1 container p-6 md:p-8 lg:p-10 animate-fade-in">
           {children}
         </div>
+        <Footer />
       </main>
 
       <StudioBottomNav />

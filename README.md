@@ -1,6 +1,6 @@
-# StreamVault - Premium Video Streaming
+# Fans on Chain Limited - Premium Video Streaming
 
-StreamVault is a high-performance, premium video streaming dashboard built with modern web technologies.
+Fans on Chain Limited is a high-performance, premium video streaming dashboard built with modern web technologies.
 
 
 ## Tech Stack

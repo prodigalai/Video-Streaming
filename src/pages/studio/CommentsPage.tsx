@@ -1,168 +1,280 @@
 import { useState } from "react";
-import { MessageSquare, MoreHorizontal, Reply, Pin, Trash2, ShieldAlert, Heart, Filter, Search, UserMinus } from "lucide-react";
+import { Search, MoreHorizontal, Send, Paperclip, Phone, Video, Info, ArrowLeft, Check, CheckCheck, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { toast } from "sonner";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
-const comments = [
-  { 
-    id: 1, 
-    user: "Alex_Visuals", 
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex", 
-    content: "The way you explained the color theory was so helpful! Can't wait for the next video.", 
-    video: "Mastering Digital Painting", 
-    date: "2 hours ago",
-    isHearted: true,
-    isPinned: false
+// Mock Data
+const conversations = [
+  {
+    id: 1,
+    user: "Alex Visuals",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=alex",
+    lastMessage: "The color grading on that last video was insane! How did you achieve that teal look?",
+    time: "2m ago",
+    unread: 2,
+    online: true,
+    type: "Subscriber"
   },
-  { 
-    id: 2, 
-    user: "Lofi_Lover", 
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lofi", 
-    content: "Perfect study music. Please keep these coming daily!", 
-    video: "Lofi Beats for Coding", 
-    date: "5 hours ago",
-    isHearted: false,
-    isPinned: true
+  {
+    id: 2,
+    user: "Sarah Creative",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah",
+    lastMessage: "Hey! Just wanted to ask about the collaboration we discussed.",
+    time: "1h ago",
+    unread: 0,
+    online: false,
+    type: "Collab"
   },
-  { 
-    id: 3, 
-    user: "CyberPunk99", 
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=cyber", 
-    content: "Check out my channel for free assets!", 
-    video: "New Asset Pack Reveal", 
-    date: "1 day ago",
-    isHearted: false,
-    isPinned: false,
-    isFlagged: true
+  {
+    id: 3,
+    user: "Mike Audio",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=mike",
+    lastMessage: "I sent over the audio files. Let me know if you need anything else.",
+    time: "3h ago",
+    unread: 1,
+    online: true,
+    type: "Editor"
   },
-  { 
-    id: 4, 
-    user: "Dev_Sarah", 
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah", 
-    content: "Loved the breakdown. Very clean setup!", 
-    video: "New Studio Setup", 
-    date: "2 days ago",
-    isHearted: true,
-    isPinned: false
+  {
+    id: 4,
+    user: "Jessica Design",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=jessica",
+    lastMessage: "Thanks for the shoutout in your stream!",
+    time: "1d ago",
+    unread: 0,
+    online: false,
+    type: "Subscriber"
+  },
+  {
+    id: 5,
+    user: "David Tech",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=david",
+    lastMessage: "Are you planning to review the new GPU?",
+    time: "2d ago",
+    unread: 0,
+    online: true,
+    type: "Subscriber"
   }
 ];
 
+const messages = [
+  { id: 1, sender: "other", content: "Hey! Loved your recent video on color theory.", time: "10:30 AM" },
+  { id: 2, sender: "me", content: "Thanks Alex! Really appreciate the support. Glad you found it helpful.", time: "10:32 AM", status: "read" },
+  { id: 3, sender: "other", content: "The color grading on that last video was insane! How did you achieve that teal look?", time: "10:33 AM" },
+];
+
 export default function CommentsPage() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const [mobileView, setMobileView] = useState("list"); // 'list' or 'chat'
+
+  const activeChat = conversations.find(c => c.id === selectedChat);
+
+  const handleChatSelect = (id: number) => {
+    setSelectedChat(id);
+    setMobileView("chat");
+  };
+
+  const handleBackToList = () => {
+    setMobileView("list");
+    setSelectedChat(null);
+  };
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gradient">Channel Comments</h1>
-          <p className="text-muted-foreground mt-1">Manage and respond to your community's feedback.</p>
+    <div className="flex h-[calc(100vh-8rem)] rounded-2xl border border-border/50 bg-card overflow-hidden shadow-sm animate-fade-in">
+      
+      {/* Sidebar / Chat List */}
+      <div className={cn(
+        "w-full md:w-80 lg:w-96 border-r border-border/50 flex flex-col bg-muted/10",
+        mobileView === "chat" ? "hidden md:flex" : "flex"
+      )}>
+        <div className="p-4 border-b border-border/50 space-y-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-bold text-foreground">Messages</h1>
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+              <MoreHorizontal className="h-5 w-5" />
+            </Button>
+          </div>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input placeholder="Search messages..." className="pl-9 bg-background border-border/50" />
+          </div>
         </div>
-        <div className="flex items-center gap-2 bg-muted/30 p-1 rounded-lg">
-           {["All", "New", "Held for review", "Flagged"].map((f) => (
-              <Button 
-                key={f}
-                variant="ghost" 
-                size="sm" 
-                onClick={() => { setActiveFilter(f); toast.info(`Filtered by: ${f}`); }}
+
+        <ScrollArea className="flex-1">
+          <div className="flex flex-col p-2 gap-1">
+            {conversations.map((chat) => (
+              <button
+                key={chat.id}
+                onClick={() => handleChatSelect(chat.id)}
                 className={cn(
-                   "h-9 px-4 rounded-md transition-all",
-                   activeFilter === f ? "bg-primary/10 text-primary" : "hover:bg-muted"
+                  "flex items-start gap-3 p-3 text-left rounded-xl transition-all hover:bg-muted/50",
+                  selectedChat === chat.id ? "bg-primary/10 hover:bg-primary/15" : "transparent"
                 )}
               >
-                 {f}
-              </Button>
-           ))}
-        </div>
-      </div>
-
-      <div className="glass-card p-4 rounded-xl flex items-center gap-4">
-         <div className="relative flex-1 group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-            <Input placeholder="Search comments or users..." className="pl-10 h-11 bg-muted/20 border-border/50 rounded-lg focus:border-primary/50 focus:ring-2 focus:ring-primary/10" onChange={(e) => { if(e.target.value.length > 2) toast.info(`Searching: ${e.target.value}`); }} />
-         </div>
-         <Button variant="outline" className="h-11 rounded-lg gap-2 border-border/50" onClick={() => toast.success("Filter menu opened")}>
-            <Filter className="h-4 w-4" /> Filter By Video
-         </Button>
-      </div>
-
-      <div className="glass-card rounded-xl overflow-hidden shadow-glow-sm">
-         <div className="divide-y divide-border/50">
-            {comments.map((comment) => (
-               <div key={comment.id} className="p-6 flex gap-4 hover:bg-primary/5 transition-all group">
-                  <Avatar className="h-12 w-12 border-2 border-border/50 flex-shrink-0">
-                     <AvatarImage src={comment.avatar} />
-                     <AvatarFallback>{comment.user[0]}</AvatarFallback>
+                <div className="relative shrink-0">
+                  <Avatar className="h-10 w-10 md:h-12 md:w-12 border border-border/50">
+                    <AvatarImage src={chat.avatar} />
+                    <AvatarFallback>{chat.user[0]}</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 space-y-3">
-                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                           <span className="font-bold cursor-pointer hover:text-primary transition-colors" onClick={() => toast.info(`Viewing profile: ${comment.user}`)}>{comment.user}</span>
-                           <span className="text-xs text-muted-foreground">{comment.date}</span>
-                           {comment.isPinned && (
-                              <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 gap-1 h-5 px-1.5 text-[10px]">
-                                 <Pin className="h-3 w-3" /> Pinned
-                              </Badge>
-                           )}
-                           {comment.isFlagged && (
-                              <Badge variant="destructive" className="bg-live/10 text-live border-live/20 gap-1 h-5 px-1.5 text-[10px]">
-                                 <ShieldAlert className="h-3 w-3" /> Spam
-                              </Badge>
-                           )}
-                        </div>
-                        <DropdownMenu>
-                           <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                 <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                           </DropdownMenuTrigger>
-                           <DropdownMenuContent align="end" className="glass-strong border-border/50">
-                              <DropdownMenuItem className="gap-2 focus:bg-primary/10" onClick={() => toast.success("Comment pinned")}>
-                                 <Pin className="h-4 w-4" /> Pin comment
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive focus:bg-destructive/10" onClick={() => toast.error("Comment deleted")}>
-                                 <Trash2 className="h-4 w-4" /> Delete
-                              </DropdownMenuItem>
-                              <DropdownMenuItem className="text-destructive focus:bg-destructive/10" onClick={() => toast.error("User blocked")}>
-                                 <UserMinus className="h-4 w-4" /> Block user
-                              </DropdownMenuItem>
-                           </DropdownMenuContent>
-                        </DropdownMenu>
-                     </div>
-                     <p className="text-sm leading-relaxed max-w-4xl">{comment.content}</p>
-                     <div className="flex items-center justify-between pt-1">
-                        <div className="flex items-center gap-4">
-                           <Button variant="ghost" className="h-8 text-xs font-bold gap-2 rounded-lg hover:text-primary transition-colors" onClick={() => toast.success("Replying to comment...")}>
-                              <Reply className="h-4 w-4" /> Reply
-                           </Button>
-                           <Button variant="ghost" size="icon" className={cn(
-                              "h-8 w-8 rounded-lg transition-colors",
-                              comment.isHearted ? "text-destructive hover:bg-destructive/10" : "text-muted-foreground hover:text-destructive"
-                           )} onClick={() => toast.success(comment.isHearted ? "Heart removed" : "Heart added")}>
-                              <Heart className={cn("h-4 w-4", comment.isHearted && "fill-current")} />
-                           </Button>
-                        </div>
-                        <span className="text-[11px] text-muted-foreground italic">On video: <span className="font-bold text-foreground hover:text-primary cursor-pointer transition-colors" onClick={() => toast.info(`Navigating to video: ${comment.video}`)}>"{comment.video}"</span></span>
-                     </div>
+                  {chat.online && (
+                    <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <p className={cn("text-sm font-bold truncate", selectedChat === chat.id ? "text-primary" : "text-foreground")}>
+                      {chat.user}
+                    </p>
+                    <span className="text-[10px] md:text-xs text-muted-foreground whitespace-nowrap">{chat.time}</span>
                   </div>
-               </div>
+                  <p className={cn(
+                      "text-xs md:text-sm truncate",
+                      chat.unread > 0 ? "font-semibold text-foreground" : "text-muted-foreground"
+                    )}>
+                    {chat.lastMessage}
+                  </p>
+                </div>
+                {chat.unread > 0 && (
+                  <div className="flex flex-col items-end justify-center h-full">
+                     <Badge className="h-5 min-w-[1.25rem] px-1.5 rounded-full flex items-center justify-center bg-primary text-primary-foreground text-[10px] shadow-sm border-0">
+                        {chat.unread}
+                     </Badge>
+                  </div>
+                )}
+              </button>
             ))}
-         </div>
-         <div className="p-6 border-t border-border/50 text-center">
-            <Button variant="ghost" className="text-primary font-bold hover:bg-primary/5 rounded-lg h-10 px-8" onClick={() => toast.info("Loading more comments...")}>Load More Comments</Button>
-         </div>
+          </div>
+        </ScrollArea>
+      </div>
+
+      {/* Main Chat Area */}
+      <div className={cn(
+        "flex-1 flex flex-col bg-background/50",
+        mobileView === "list" ? "hidden md:flex" : "flex"
+      )}>
+        {selectedChat ? (
+          <>
+            {/* Chat Header */}
+            <div className="p-4 border-b border-border/50 flex items-center justify-between bg-card/50 backdrop-blur-sm z-10">
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" size="icon" className="md:hidden -ml-2 mr-1" onClick={handleBackToList}>
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <div className="relative">
+                  <Avatar className="h-10 w-10 border border-border/50">
+                    <AvatarImage src={activeChat?.avatar} />
+                    <AvatarFallback>{activeChat?.user[0]}</AvatarFallback>
+                  </Avatar>
+                  {activeChat?.online && (
+                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-green-500 border-2 border-background" />
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-sm md:text-base font-bold text-foreground flex items-center gap-2">
+                    {activeChat?.user}
+                    <Badge variant="outline" className="text-[10px] h-5 px-2 bg-primary/5 text-primary border-primary/20">{activeChat?.type}</Badge>
+                  </h2>
+                  <p className="text-xs text-muted-foreground">
+                    {activeChat?.online ? "Active now" : "Offline"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 md:gap-2">
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+                  <Phone className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary">
+                  <Video className="h-5 w-5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-primary hidden sm:inline-flex">
+                  <Info className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Messages List */}
+            <ScrollArea className="flex-1 p-4 md:p-6 bg-muted/5">
+              <div className="space-y-6">
+                <div className="flex items-center justify-center">
+                  <span className="text-xs font-medium text-muted-foreground bg-background/80 border border-border/50 px-3 py-1 rounded-full shadow-sm">Today</span>
+                </div>
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={cn(
+                      "flex gap-3 max-w-[85%] md:max-w-[75%]",
+                      msg.sender === "me" ? "ml-auto flex-row-reverse" : ""
+                    )}
+                  >
+                   {msg.sender !== "me" && (
+                    <Avatar className="h-8 w-8 mt-1 border border-border/50 hidden sm:block">
+                      <AvatarImage src={activeChat?.avatar} />
+                      <AvatarFallback>{activeChat?.user[0]}</AvatarFallback>
+                    </Avatar>
+                   )}
+                    <div className={cn(
+                      "space-y-1",
+                      msg.sender === "me" ? "text-right" : "text-left"
+                    )}>
+                      <div className={cn(
+                        "p-3 md:p-4 rounded-2xl md:rounded-3xl text-sm md:text-base shadow-sm",
+                        msg.sender === "me" 
+                          ? "bg-primary text-primary-foreground rounded-tr-none" 
+                          : "bg-card border border-border/50 text-foreground rounded-tl-none"
+                      )}>
+                        {msg.content}
+                      </div>
+                      <div className={cn(
+                        "flex items-center gap-1 text-[10px] md:text-xs text-muted-foreground px-1",
+                        msg.sender === "me" ? "justify-end" : "justify-start"
+                      )}>
+                        {msg.time}
+                        {msg.sender === "me" && (
+                          <span className="ml-1">
+                            {msg.status === "read" ? <CheckCheck className="h-3 w-3 text-primary" /> : <Check className="h-3 w-3" />}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+
+            {/* Input Area */}
+            <div className="p-3 md:p-4 border-t border-border/50 bg-card/50 backdrop-blur-sm">
+               <div className="flex items-end gap-2 md:gap-3 bg-muted/30 p-2 rounded-xl md:rounded-2xl border border-border/50 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary/50 transition-all">
+                  <Button variant="ghost" size="icon" className="h-10 w-10 text-muted-foreground hover:text-primary rounded-xl shrink-0">
+                     <Paperclip className="h-5 w-5" />
+                  </Button>
+                  <div className="flex-1 py-2">
+                     <Input 
+                        placeholder="Type a message..." 
+                        className="border-0 bg-transparent p-0 h-auto focus-visible:ring-0 text-sm md:text-base placeholder:text-muted-foreground/50" 
+                     />
+                  </div>
+                  <Button size="icon" className="h-10 w-10 rounded-xl bg-primary shadow-lg shadow-primary/20 hover:scale-105 transition-all shrink-0">
+                     <Send className="h-4 w-4 ml-0.5" />
+                  </Button>
+               </div>
+            </div>
+          </>
+        ) : (
+             // Empty State (Desktop)
+          <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-muted/5">
+             <div className="h-24 w-24 rounded-full bg-primary/10 flex items-center justify-center mb-6 animate-pulse">
+                <Search className="h-10 w-10 text-primary" />
+             </div>
+             <h2 className="text-2xl font-bold text-foreground mb-2">Select a conversation</h2>
+             <p className="text-muted-foreground max-w-sm">Choose a chat from the sidebar to start messaging your community members.</p>
+          </div>
+        )}
       </div>
     </div>
   );
 }
-
-

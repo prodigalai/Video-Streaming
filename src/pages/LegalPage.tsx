@@ -1,51 +1,100 @@
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { FileText, ArrowRight, Shield, Scale, Book, Lock } from "lucide-react";
+import { FileText, ArrowRight, Shield, Scale, Book, Lock, CreditCard, RotateCcw, Hand, ShieldAlert, ClipboardList } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const legalDocuments = [
   {
     id: "terms",
     title: "Terms of Service",
-    description: "The rules and regulations for using our platform.",
+    description: "The official terms and conditions governing the use of Fans on Chain.",
     icon: Scale,
     lastUpdated: "February 2026"
   },
   {
     id: "privacy",
     title: "Privacy Policy",
-    description: "How we collect, use, and protect your personal data.",
+    description: "Our commitment to protecting your personal data and privacy.",
     icon: Lock,
     lastUpdated: "February 2026"
   },
   {
     id: "aup",
     title: "Acceptable Use Policy",
-    description: "Guidelines on what content is allowed and prohibited.",
-    icon: Shield,
-    lastUpdated: "January 2026"
+    description: "The mandatory standards for content safety and user conduct.",
+    icon: ShieldAlert,
+    lastUpdated: "February 2026"
   },
   {
     id: "creator-agreement",
-    title: "Creator Agreement",
-    description: "Terms specifically for content creators on our platform.",
+    title: "Contract between Fan & Creator",
+    description: "Standard terms for transactions between creators and their fans.",
     icon: FileText,
     lastUpdated: "February 2026"
   },
   {
-    id: "cookies",
-    title: "Cookie Policy",
-    description: "Information about how we use cookies and tracking technologies.",
-    icon: Book,
-    lastUpdated: "December 2025"
+    id: "dmca",
+    title: "DMCA Takedown Policy",
+    description: "Procedures for reporting copyright infringement on our platform.",
+    icon: Shield,
+    lastUpdated: "February 2026"
   },
   {
-    id: "agent-agreement",
-    title: "Agent Agreement",
-    description: "Terms for managed accounts and agency relationships.",
+    id: "compliance",
+    title: "Compliance & Record-Keeping",
+    description: "18 U.S.C. §2257 Compliance & Record-Keeping Disclosure.",
     icon: FileText,
-    lastUpdated: "January 2026"
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "p2b",
+    title: "Platform to Business Terms",
+    description: "Regulation (EU) 2019/1150 – Promoting fairness and transparency for business users.",
+    icon: Scale,
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "uk-vat",
+    title: "UK VAT Policy",
+    description: "Important Value Added Tax information for UK-based users.",
+    icon: Book,
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "crypto-terms",
+    title: "Crypto Card & AUP",
+    description: "Acceptable Use Policy and terms for crypto-linked payment cards.",
+    icon: CreditCard,
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "anti-slavery",
+    title: "Anti-Slavery Statement",
+    description: "Our commitment and actions to prevent modern slavery and human trafficking.",
+    icon: Hand,
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "complaints",
+    title: "Complaints Policy",
+    description: "How to lodge a complaint and our formal resolution process.",
+    icon: Book,
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "appeals",
+    title: "Appeals Policy",
+    description: "Formal procedure for seeking review of account restrictions or content decisions.",
+    icon: RotateCcw,
+    lastUpdated: "February 2026"
+  },
+  {
+    id: "record-keeping",
+    title: "2257 Record-Keeping",
+    description: "Statement regarding record-keeping compliance for visual depictions.",
+    icon: ClipboardList,
+    lastUpdated: "February 2026"
   }
 ];
 
@@ -86,7 +135,7 @@ export default function LegalPage() {
                     </div>
                     <Button variant="ghost" asChild className="w-full justify-between hover:bg-primary hover:text-primary-foreground group-hover:pl-4 transition-all min-h-[44px] touch-manipulation">
                       <Link to={`/legal/${doc.id}`} className="flex items-center justify-between w-full">
-                        Read Document
+                        View Details
                         <ArrowRight className="h-4 w-4 shrink-0" />
                       </Link>
                     </Button>

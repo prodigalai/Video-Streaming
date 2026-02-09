@@ -94,11 +94,14 @@ export default function VideoWatchPage() {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showDescription, setShowDescription] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [isCssFullScreen, setIsCssFullScreen] = useState(false);
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleFullScreenChange = () => {
-      setIsFullScreen(!!document.fullscreenElement);
+      const isApiFullScreen = !!document.fullscreenElement;
+      setIsFullScreen(isApiFullScreen);
+      if (isApiFullScreen) setIsCssFullScreen(false);
     };
 
     document.addEventListener("fullscreenchange", handleFullScreenChange);
@@ -106,20 +109,37 @@ export default function VideoWatchPage() {
   }, []);
 
   const toggleFullScreen = async () => {
-      if (!document.fullscreenElement) {
-        if (videoContainerRef.current) {
-          try {
+      // Logic: If already in API fullscreen, exit it.
+      // If in CSS fullscreen, exit it.
+      // If neither, try API fullscreen. If it fails or isn't supported, use CSS fullscreen.
+      
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
+      
+      if (isCssFullScreen) {
+        setIsCssFullScreen(false);
+        return;
+      }
+
+      if (videoContainerRef.current) {
+        try {
+          // Check if the standard method exists
+          if (videoContainerRef.current.requestFullscreen) {
             await videoContainerRef.current.requestFullscreen();
-          } catch (err) {
-            console.error("Error attempting to enable full-screen mode:", err);
+          } else {
+            // Fallback for iOS/other browsers without div fullscreen support
+            setIsCssFullScreen(true);
           }
-        }
-      } else {
-        if (document.exitFullscreen) {
-          await document.exitFullscreen();
+        } catch (err) {
+          console.error("Fullscreen API failed, falling back to CSS:", err);
+          setIsCssFullScreen(true);
         }
       }
     };
+
+  const isViewFullScreen = isFullScreen || isCssFullScreen;
 
   // Use locked video for demo if id matches
   const video = id === "v2" ? lockedVideoData : videoData;
@@ -132,7 +152,7 @@ export default function VideoWatchPage() {
   const handleShare = () => {
     const shareData = {
       title: video.title,
-      text: `Check out this video on StreamVault: ${video.title}`,
+      text: `Check out this video on Fans on Chain Limited: ${video.title}`,
       url: window.location.href,
     };
 
@@ -148,13 +168,31 @@ export default function VideoWatchPage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-[#05020d] text-white">
-        <div className="container py-4 lg:py-8">
-          <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+      <div className={cn(
+        "bg-[#05020d] text-white",
+        isViewFullScreen ? "fixed inset-0 z-50 bg-black min-h-screen" : "min-h-screen"
+      )}>
+        <div className={cn(
+          "container transition-all",
+          isViewFullScreen ? "px-0 max-w-none h-full" : "py-4 lg:py-8"
+        )}>
+          <div className={cn(
+            "grid gap-6 lg:gap-8",
+            isViewFullScreen ? "grid-cols-1 h-full" : "lg:grid-cols-3"
+          )}>
             {/* Main Content Area */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className={cn(
+              "space-y-8",
+              isViewFullScreen ? "lg:col-span-1 h-full w-full" : "lg:col-span-2"
+            )}>
               {/* Cinematic Video Player Container */}
-              <div ref={videoContainerRef} className="relative aspect-video rounded-3xl overflow-hidden bg-black group shadow-2xl border border-white/5">
+              <div 
+                ref={videoContainerRef} 
+                className={cn(
+                  "relative overflow-hidden bg-black group shadow-2xl border border-white/5 transition-all duration-300",
+                  isViewFullScreen ? "fixed inset-0 z-50 h-full w-full rounded-none" : "aspect-video rounded-3xl"
+                )}
+              >
                 <img
                   src={video.thumbnail}
                   alt={video.title}
@@ -225,7 +263,7 @@ export default function VideoWatchPage() {
                           className="h-10 w-10 text-white rounded-xl hover:bg-primary/20 hover:text-primary transition-colors"
                           onClick={toggleFullScreen}
                         >
-                          {isFullScreen ? <Minimize className="h-6 w-6" /> : <Maximize className="h-6 w-6" />}
+                          {isViewFullScreen ? <Minimize className="h-6 w-6" /> : <Maximize className="h-6 w-6" />}
                         </Button>
                       </div>
                     </div>

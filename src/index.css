@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* StreamVault Premium Dark Theme - Cosmos Inspired */
+/* Fans on Chain Limited Premium Dark Theme - Cosmos Inspired */
 
 @layer base {
   :root {
@@ -732,12 +732,12 @@
   }
 
   /* === SCROLLBAR HIDE === */
-  .scrollbar-hide {
+  .scrollbar-hide, .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
-  .scrollbar-hide::-webkit-scrollbar {
+  .scrollbar-hide::-webkit-scrollbar, .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 
